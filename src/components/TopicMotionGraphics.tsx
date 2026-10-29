@@ -10,33 +10,32 @@ interface TopicMotionGraphicsProps {
 }
 
 /**
- * TopicMotionGraphics — Photo vs Image (Assamese)
+ * TopicMotionGraphics — Takeoff vs Landing (Assamese Aviation Physics)
  * ─────────────────────────────────────────────────────────────
  * 100% TRANSPARENT background.
- * Visual-first procedural SVG art with prominent 33px text chips.
+ * Ultra-realistic procedural SVG vector art with prominent 33px Assamese text chips.
  *
- * LEFT  — Photo (9.00s → 29.80s)
- *   1. photoOptics       (9.10s):  Multi-coated camera lens, aperture & CMOS sensor
- *   2. photoRealCapture  (16.90s): DSLR, 35mm film reel & mobile viewfinder capturing reality
- *   3. photoMandatory    (26.00s): Camera hardware mandatory seal
+ * LEFT  — Takeoff (9.50s → 30.30s)
+ *   1. takeoffThrust     (9.50s):  Titanium turbofan engine 100% TOGA thrust & supersonic shock diamonds
+ *   2. takeoffLift       (18.54s): True Airfoil wing aerodynamics: Bernoulli airflow & upward lift vector
+ *   3. takeoffRotation   (25.38s): Airliner Vr rotation angle (~15° pitch up) soaring into clouds
  *
- * RIGHT — Image (29.80s → 54.00s)
- *   4. imgBroadConcept   (30.00s): Broad visual canvas & digital pixel matrix
- *   5. imgDigitalGraphics(37.10s): Vector curves, AI sparkles, Photoshop, logos & screenshots
- *   6. imgMirrorsScans   (45.80s): Mirror reflection wave & medical X-ray scan
+ * RIGHT — Landing (30.30s → 48.80s)
+ *   4. landingTouchdown  (30.38s): Heavy bogie landing gear touchdown, shock compression & tire smoke puff
+ *   5. landingReverse    (37.02s): Wing flight spoilers popped + engine reverse thrust deflector doors
+ *   6. landingSafeStop   (44.58s): PFD Cockpit Airspeed gauge dropping to 0 KTS & green brake seal
  */
 
 /* ─── Tokens ─────────────────────────────────────────────── */
 const DS = {
-  font: `"Poppins","Hind Siliguri","Noto Sans Bengali","Segoe UI",system-ui,sans-serif`,
+  font: `"Hind Siliguri","Noto Sans Bengali","Poppins","Segoe UI",system-ui,sans-serif`,
   mono: `"JetBrains Mono","Roboto Mono",ui-monospace,monospace`,
   ink:   "#0B1F4B",
-  amber: { a: "#B45309", b: "#F59E0B" },
-  blue:  { a: "#1D4ED8", b: "#3B82F6" },
-  cyan:  { a: "#0284C7", b: "#00E5FF" },
-  violet:{ a: "#7C3AED", b: "#A78BFA" },
+  amber: { a: "#C2410C", b: "#F97316" },
+  blue:  { a: "#0284C7", b: "#00E5FF" },
+  cyan:  { a: "#0D9488", b: "#14B8A6" },
   green: { a: "#059669", b: "#10B981" },
-  red:   { a: "#DC2626", b: "#EF4444" },
+  red:   { a: "#B91C1C", b: "#EF4444" },
   spring: {
     pop:  { damping: 12, stiffness: 170, mass: 0.7 },
     soft: { damping: 20, stiffness: 100, mass: 1.0 },
@@ -75,177 +74,191 @@ const In: React.FC<{ f: number; fps: number; at: number; dy?: number; children: 
   );
 };
 
-/* ─── SVG Realistic Defs ──────────────────────────────────── */
+/* ─── SVG Aviation Defs ───────────────────────────────────── */
 const Defs: React.FC = () => (
   <defs>
-    <linearGradient id="g-lens-glass" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stopColor="#38BDF8" stopOpacity="0.85"/>
-      <stop offset="35%" stopColor="#A855F7" stopOpacity="0.5"/>
-      <stop offset="70%" stopColor="#0284C7" stopOpacity="0.75"/>
-      <stop offset="100%" stopColor="#06B6D4" stopOpacity="0.9"/>
-    </linearGradient>
-
-    <linearGradient id="g-barrel" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stopColor="#1E293B"/>
-      <stop offset="30%" stopColor="#475569"/>
-      <stop offset="70%" stopColor="#1E293B"/>
+    {/* Metallic Engine Cowling */}
+    <linearGradient id="g-engine-metal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stopColor="#475569"/>
+      <stop offset="30%" stopColor="#64748B"/>
+      <stop offset="60%" stopColor="#1E293B"/>
       <stop offset="100%" stopColor="#0F172A"/>
     </linearGradient>
 
-    <linearGradient id="g-cmos" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stopColor="#047857"/>
-      <stop offset="50%" stopColor="#065F46"/>
-      <stop offset="100%" stopColor="#022C22"/>
+    {/* Jet Thrust Flame Plume */}
+    <linearGradient id="g-thrust-fire" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stopColor="#E0F2FE" stopOpacity="1"/>
+      <stop offset="15%" stopColor="#38BDF8" stopOpacity="0.95"/>
+      <stop offset="45%" stopColor="#F59E0B" stopOpacity="0.85"/>
+      <stop offset="75%" stopColor="#EA580C" stopOpacity="0.75"/>
+      <stop offset="100%" stopColor="#DC2626" stopOpacity="0"/>
     </linearGradient>
 
-    <linearGradient id="g-photon-beam" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stopColor="#FDE047" stopOpacity="0.95"/>
-      <stop offset="45%" stopColor="#F59E0B" stopOpacity="0.75"/>
-      <stop offset="85%" stopColor="#38BDF8" stopOpacity="0.5"/>
-      <stop offset="100%" stopColor="#38BDF8" stopOpacity="0.1"/>
+    {/* Asphalt Runway */}
+    <linearGradient id="g-asphalt" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stopColor="#1E293B"/>
+      <stop offset="100%" stopColor="#0B0F19"/>
     </linearGradient>
 
-    <linearGradient id="g-creative" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stopColor="#7C3AED"/>
-      <stop offset="50%" stopColor="#C084FC"/>
-      <stop offset="100%" stopColor="#00E5FF"/>
-    </linearGradient>
-
+    {/* Filters */}
     <filter id="f-real-drop" x="-30%" y="-30%" width="160%" height="170%">
-      <feDropShadow dx="0" dy="7" stdDeviation="7" floodColor="#060C1E" floodOpacity="0.35"/>
+      <feDropShadow dx="0" dy="7" stdDeviation="7" floodColor="#060C1E" floodOpacity="0.38"/>
     </filter>
-    <filter id="f-lens-flare" x="-40%" y="-40%" width="180%" height="180%">
-      <feGaussianBlur stdDeviation="6" result="blur"/>
+    <filter id="f-thrust-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
       <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-    <filter id="f-glow-violet" x="-35%" y="-35%" width="170%" height="170%">
-      <feGaussianBlur stdDeviation="5" result="b"/>
-      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
 );
 
 /* ══════════════════════════════════════════════════════════════
-   LEFT — PHOTO SCENES (9.00s → 29.80s)
+   LEFT — TAKEOFF (টেক অফ)
    ══════════════════════════════════════════════════════════════ */
 
-/* ── SCENE 1: Optical Lens, Real Light & Sensor Grid (9.10s – 16.90s) ── */
-const ArtPhotoOptics: Art = ({ f, t, fps }) => {
-  const beamShift = (t * 110) % 80;
-  const irisAngle = Math.sin(t * 3.5) * 15;
-  const sensorShimmer = 0.65 + Math.sin(t * 4) * 0.35;
-
-  return (
-    <>
-      <In f={f} fps={fps} at={0.0} dy={16}>
-        <g transform="translate(35, 140)">
-          <path d="M 0 -85 L 140 -35 L 140 35 L 0 85 Z" fill="url(#g-photon-beam)" opacity={0.78} filter="url(#f-lens-flare)"/>
-          {[0, 1, 2, 3].map((i) => (
-            <circle
-              key={i}
-              cx={((beamShift + i * 40) % 135)}
-              cy={Math.sin(t * 5 + i * 1.5) * 20}
-              r={3.8}
-              fill="#FFFBEB"
-            />
-          ))}
-        </g>
-      </In>
-
-      <In f={f} fps={fps} at={0.12} dy={22}>
-        <g transform="translate(240, 140)" filter="url(#f-real-drop)">
-          <rect x="-70" y="-80" width="140" height="160" rx="14" fill="url(#g-barrel)" stroke="#475569" strokeWidth="3"/>
-          <rect x="-62" y="-72" width="124" height="144" rx="8" fill="#0B132B"/>
-          <rect x="-65" y="-80" width="8" height="160" fill="#EF4444"/>
-
-          <path d="M -40 -64 Q -10 0 -40 64 Q -20 0 -40 -64 Z" fill="url(#g-lens-glass)" stroke="#38BDF8" strokeWidth="2"/>
-          <path d="M -8 -64 Q 15 0 -8 64 Q 0 0 -8 -64 Z" fill="url(#g-lens-glass)" stroke="#818CF8" strokeWidth="1.8" opacity={0.9}/>
-
-          <g transform={`translate(22, 0) rotate(${irisAngle})`}>
-            <circle cx="0" cy="0" r="42" fill="none" stroke="#F59E0B" strokeWidth="3.5" strokeDasharray="14 10"/>
-            <circle cx="0" cy="0" r="16" fill="#FDE047" opacity={0.5} filter="url(#f-lens-flare)"/>
-          </g>
-          <path d="M 45 -55 Q 60 0 45 55 Z" fill="url(#g-lens-glass)" stroke="#38BDF8" strokeWidth="2"/>
-        </g>
-      </In>
-
-      <In f={f} fps={fps} at={0.22} dy={18}>
-        <g transform="translate(425, 140)" filter="url(#f-real-drop)">
-          <rect x="-38" y="-70" width="76" height="140" rx="9" fill="url(#g-cmos)" stroke="#10B981" strokeWidth="3"/>
-          <g opacity={sensorShimmer}>
-            {[-24, -12, 0, 12, 24].map((gx) =>
-              [-50, -30, -10, 10, 30, 50].map((gy) => (
-                <rect key={`${gx}-${gy}`} x={gx - 4} y={gy - 8} width="8" height="16" rx="2" fill="#6EE7B7"/>
-              ))
-            )}
-          </g>
-          {[-55, -35, -15, 5, 25, 45].map((py) => (
-            <rect key={py} x="38" y={py} width="10" height="7" fill="#F59E0B" rx="1.5"/>
-          ))}
-        </g>
-      </In>
-    </>
-  );
-};
-
-/* ── SCENE 2: Real Capture — DSLR, Mobile & 35mm Film (16.90s – 26.00s) ── */
-const ArtPhotoRealCapture: Art = ({ f, t, fps }) => {
-  const flashBurst = Math.sin(t * 6) > 0.88;
+/* ── SCENE 1: Turbofan Jet Engine 100% TOGA Thrust (9.50s – 18.54s) ── */
+const ArtTakeoffThrust: Art = ({ f, t, fps }) => {
+  const fanSpin = t * 800;
+  const flameOsc = 0.88 + Math.sin(t * 24) * 0.12;
+  const flameLength = 175 + Math.sin(t * 30) * 20;
 
   return (
     <>
       <In f={f} fps={fps} at={0.0} dy={22}>
-        <g transform="translate(95, 145)" filter="url(#f-real-drop)">
-          <rect x="-38" y="-60" width="76" height="120" rx="12" fill="#D97706" stroke="#FDE68A" strokeWidth="2.5"/>
-          <rect x="-32" y="-45" width="64" height="90" rx="6" fill="#18181B"/>
-          <circle cx="0" cy="-60" r="10" fill="#71717A" stroke="#27272A" strokeWidth="2"/>
-          <path d="M 38 -20 Q 90 -40 85 40 Q 55 50 38 30" fill="#18181B" stroke="#52525B" strokeWidth="2"/>
-          {[-12, 2, 16, 28].map((sy, i) => (
-            <rect key={i} x="44" y={sy} width="7" height="9" rx="1.5" fill="#FFFFFF" opacity={0.7}/>
+        <g transform="translate(180, 140)" filter="url(#f-real-drop)">
+          {/* Supersonic Shock Diamonds Thrust Plume */}
+          <path
+            d={`M 90 -32 L ${90 + flameLength} 0 L 90 32 Z`}
+            fill="url(#g-thrust-fire)"
+            opacity={flameOsc}
+            filter="url(#f-thrust-glow)"
+          />
+          {/* Internal Shock Diamond Cones */}
+          {[35, 75, 115].map((dx, i) => (
+            <polygon
+              key={i}
+              points={`${90 + dx},-14 ${115 + dx},0 ${90 + dx},14 ${75 + dx},0`}
+              fill="#FFFFFF"
+              opacity={0.8}
+              filter="url(#f-thrust-glow)"
+            />
           ))}
-        </g>
-      </In>
 
-      <In f={f} fps={fps} at={0.12} dy={24}>
-        <g transform="translate(265, 140)" filter="url(#f-real-drop)">
-          <path d="M -95 65 L -95 -20 L -60 -20 L -38 -55 L 38 -55 L 60 -20 L 95 -20 L 95 65 Z"
-            fill="#0F172A" stroke="#475569" strokeWidth="3.5"/>
-          <circle cx="8" cy="18" r="54" fill="#020617" stroke="#3B82F6" strokeWidth="4.5"/>
-          <circle cx="8" cy="18" r="42" fill="url(#g-lens-glass)"/>
-          <circle cx="-5" cy="5" r="14" fill="#FFFFFF" opacity={0.45} filter="url(#f-lens-flare)"/>
-          {flashBurst && (
-            <circle cx="-38" cy="-55" r="40" fill="#FFFFFF" opacity={0.85} filter="url(#f-lens-flare)"/>
-          )}
-        </g>
-      </In>
+          {/* Aerodynamic Nacelle Cowling */}
+          <path
+            d="M -105 -55 C -40 -60 55 -48 90 -34 L 90 34 C 55 48 -40 60 -105 55 C -122 35 -122 -35 -105 -55 Z"
+            fill="url(#g-engine-metal)"
+            stroke="#94A3B8"
+            strokeWidth="3.5"
+          />
 
-      <In f={f} fps={fps} at={0.22} dy={20}>
-        <g transform="translate(435, 140)" filter="url(#f-real-drop)">
-          <rect x="-38" y="-72" width="76" height="144" rx="20" fill="#0F172A" stroke="#38BDF8" strokeWidth="2.8"/>
-          <rect x="-32" y="-64" width="58" height="66" rx="14" fill="#1E293B" stroke="#475569" strokeWidth="1.5"/>
-          {[-14, 12].map((cx, i) => (
-            <circle key={i} cx={cx} cy="-40" r="10" fill="url(#g-lens-glass)" stroke="#38BDF8" strokeWidth="2"/>
-          ))}
-          <circle cx="-14" cy="-14" r="10" fill="url(#g-lens-glass)" stroke="#38BDF8" strokeWidth="2"/>
+          {/* Titanium Fan Blades Spinning at High RPM */}
+          <g transform="translate(-90, 0)">
+            <ellipse cx="0" cy="0" rx="14" ry="48" fill="#020617" stroke="#334155" strokeWidth="2.5"/>
+            <g transform={`rotate(${fanSpin})`}>
+              {[0, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240, 264, 288, 312, 336].map((deg) => (
+                <line
+                  key={deg}
+                  x1="0"
+                  y1="0"
+                  x2={Math.cos(deg) * 42}
+                  y2={Math.sin(deg) * 42}
+                  stroke="#CBD5E1"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                />
+              ))}
+              <circle cx="0" cy="0" r="12" fill="#E2E8F0" stroke="#475569" strokeWidth="2.5"/>
+            </g>
+          </g>
+
+          {/* Heavy Wing Pylon Strut */}
+          <polygon points="-35,-56 25,-56 45,-90 -15,-90" fill="#334155" stroke="#64748B" strokeWidth="2.5"/>
         </g>
       </In>
     </>
   );
 };
 
-/* ── SCENE 3: Mandatory Camera Hardware (26.00s – 29.80s) ── */
-const ArtPhotoMandatory: Art = ({ f, t, fps }) => {
+/* ── SCENE 2: Airfoil Aerodynamics & Bernoulli Lift (18.54s – 25.38s) ── */
+const ArtTakeoffLift: Art = ({ f, t, fps }) => {
+  const streamOffset = (t * 220) % 100;
+  const liftPulse = 1 + Math.sin(t * 4) * 0.08;
+
   return (
     <>
       <In f={f} fps={fps} at={0.0} dy={22}>
         <g transform="translate(260, 140)" filter="url(#f-real-drop)">
-          <circle cx="0" cy="0" r="105" fill="url(#g-barrel)" stroke="#64748B" strokeWidth="5"/>
-          <circle cx="0" cy="0" r="90" fill="#0F172A" stroke="#334155" strokeWidth="3"/>
-          <circle cx="0" cy="0" r="32" fill="#020617" stroke="#38BDF8" strokeWidth="3"/>
-          <circle cx="0" cy="0" r="18" fill="url(#g-lens-glass)"/>
-          <g transform="translate(75, 75)" filter="url(#f-real-drop)">
-            <circle cx="0" cy="0" r="28" fill="#1D4ED8" stroke="#93C5FD" strokeWidth="3"/>
-            <path d="M -10 0 L -3 8 L 12 -8" fill="none" stroke="#FFFFFF" strokeWidth="4.5" strokeLinecap="round"/>
+          {/* Airfoil Cross-Section (Aircraft Wing Profile) */}
+          <path
+            d="M -135 0 C -135 -48 -15 -44 130 0 C -15 20 -105 18 -135 0 Z"
+            fill="url(#g-engine-metal)"
+            stroke="#38BDF8"
+            strokeWidth="3.5"
+          />
+
+          {/* Top Fast Low-Pressure Airflow (Bernoulli Streamlines) */}
+          {[-58, -42, -26].map((y, i) => (
+            <path
+              key={`top-${i}`}
+              d={`M -190 ${y + 16} Q -25 ${y - 20} 180 ${y + 14}`}
+              fill="none"
+              stroke="#00E5FF"
+              strokeWidth="3.5"
+              strokeDasharray="16 12"
+              strokeDashoffset={-streamOffset * 1.6}
+            />
+          ))}
+
+          {/* Bottom High-Pressure Slower Airflow */}
+          {[26, 44].map((y, i) => (
+            <path
+              key={`bot-${i}`}
+              d={`M -190 ${y} Q -25 ${y + 6} 180 ${y}`}
+              fill="none"
+              stroke="#F59E0B"
+              strokeWidth="3.5"
+              strokeDasharray="12 12"
+              strokeDashoffset={-streamOffset}
+            />
+          ))}
+
+          {/* Massive Pulsing LIFT Vector Arrow */}
+          <g transform={`translate(0, -68) scale(${liftPulse})`}>
+            <line x1="0" y1="45" x2="0" y2="-25" stroke="#10B981" strokeWidth="7" strokeLinecap="round"/>
+            <polygon points="-14,-20 0,-44 14,-20" fill="#10B981"/>
+          </g>
+        </g>
+      </In>
+    </>
+  );
+};
+
+/* ── SCENE 3: Rotation (Vr) & Soaring Upwards (25.38s – 30.30s) ── */
+const ArtTakeoffRotation: Art = ({ f, t, fps }) => {
+  const pitchAngle = interpolate(c01((t - 25.38) / 3.0), [0, 1], [-2, -18], { easing: ease.out });
+  const climbY = interpolate(c01((t - 25.38) / 3.0), [0, 1], [0, -50], { easing: ease.out });
+
+  return (
+    <>
+      <In f={f} fps={fps} at={0.0} dy={24}>
+        <g transform={`translate(260, ${150 + climbY})`} filter="url(#f-real-drop)">
+          {/* Runway Ground Line */}
+          <line x1="-220" y1="80" x2="220" y2="80" stroke="#475569" strokeWidth="4.5"/>
+          <line x1="-200" y1="80" x2="200" y2="80" stroke="#FDE047" strokeWidth="3" strokeDasharray="20 14"/>
+
+          {/* Commercial Aircraft Rotating Upwards */}
+          <g transform={`rotate(${pitchAngle})`}>
+            {/* Aerodynamic Fuselage */}
+            <path
+              d="M 125 0 C 95 -24 -105 -24 -145 -6 L -170 -38 L -158 0 L -145 14 L 85 14 Z"
+              fill="#F8FAFC"
+              stroke="#0284C7"
+              strokeWidth="3.5"
+            />
+            {/* Wing Swept Back */}
+            <polygon points="-32,6 24,6 -22,48 -54,48" fill="#CBD5E1" stroke="#64748B" strokeWidth="2.5"/>
+            {/* Engine Thrust Flame Blast */}
+            <path d="M -48 30 L -95 30" stroke="#F97316" strokeWidth="5" filter="url(#f-thrust-glow)"/>
           </g>
         </g>
       </In>
@@ -254,89 +267,132 @@ const ArtPhotoMandatory: Art = ({ f, t, fps }) => {
 };
 
 /* ══════════════════════════════════════════════════════════════
-   RIGHT — IMAGE SCENES (29.80s → 54.00s)
+   RIGHT — LANDING (লেণ্ডিং)
    ══════════════════════════════════════════════════════════════ */
 
-/* ── SCENE 4: Visual Concept & Digital Pixel Spectrum (30.00s – 37.10s) ── */
-const ArtImageBroadConcept: Art = ({ f, t, fps }) => {
-  const spin = t * 35;
-  const glow = 0.5 + Math.sin(t * 3.5) * 0.5;
+/* ── SCENE 4: Touchdown, Smoke & Gear Compression (30.38s – 37.02s) ── */
+const ArtLandingTouchdown: Art = ({ f, t, fps }) => {
+  const smokePuff = (t * 5) % 1;
+  const smokeR = smokePuff * 30;
+  const smokeOp = 1 - smokePuff;
 
   return (
     <>
       <In f={f} fps={fps} at={0.0} dy={22}>
-        <g transform="translate(260, 135)" filter="url(#f-real-drop)">
-          <rect x="-180" y="-85" width="360" height="170" rx="16" fill="#0F0621" stroke="#A78BFA" strokeWidth="3"/>
-          <g transform={`rotate(${spin})`} opacity={0.85}>
-            {[-45, 0, 45].map((x) =>
-              [-45, 0, 45].map((y) => (
-                <rect key={`${x}-${y}`} x={x - 14} y={y - 14} width="28" height="28" rx="6"
-                  fill="url(#g-creative)" opacity={0.7} stroke="#C4B5FD" strokeWidth="1.2"/>
-              ))
-            )}
+        <g transform="translate(260, 140)" filter="url(#f-real-drop)">
+          {/* Asphalt Runway with Centerline */}
+          <rect x="-220" y="65" width="440" height="28" fill="url(#g-asphalt)" stroke="#475569" strokeWidth="2"/>
+          <line x1="-200" y1="78" x2="200" y2="78" stroke="#FBBF24" strokeWidth="3" strokeDasharray="24 16"/>
+
+          {/* Heavy Multi-Wheel Main Landing Gear Bogie */}
+          <g transform="translate(0, 5)">
+            {/* Oleo Shock Strut Compression */}
+            <rect x="-9" y="-72" width="18" height="88" rx="4" fill="#64748B" stroke="#1E293B" strokeWidth="2.5"/>
+            <rect x="-5" y="-30" width="10" height="46" fill="#F1F5F9"/>
+            <line x1="-38" y1="20" x2="38" y2="20" stroke="#334155" strokeWidth="6"/>
+
+            {/* Twin Heavy Tires Touchdown on Tarmac */}
+            {[-34, 34].map((tx) => (
+              <g key={tx} transform={`translate(${tx}, 20)`}>
+                <circle cx="0" cy="0" r="28" fill="#0F172A" stroke="#334155" strokeWidth="3.5"/>
+                <circle cx="0" cy="0" r="14" fill="#94A3B8" stroke="#475569" strokeWidth="2"/>
+              </g>
+            ))}
+
+            {/* Dynamic Friction Smoke Puffs */}
+            {[-34, 34].map((tx) => (
+              <circle
+                key={`smoke-${tx}`}
+                cx={tx - 14}
+                cy={42}
+                r={smokeR}
+                fill="#E2E8F0"
+                opacity={smokeOp}
+                filter="url(#f-thrust-glow)"
+              />
+            ))}
           </g>
-          <circle cx="0" cy="0" r="30" fill="#0F0621" stroke="#38BDF8" strokeWidth="3"/>
-          <circle cx="0" cy="0" r="14" fill="#A78BFA" opacity={glow} filter="url(#f-glow-violet)"/>
         </g>
       </In>
     </>
   );
 };
 
-/* ── SCENE 5: Digital Graphics, AI & Photoshop (37.10s – 45.80s) ── */
-const ArtImageDigitalGraphics: Art = ({ f, t, fps }) => {
-  const floatBob = Math.sin(t * 3.5) * 6;
-  const cards = [
-    { label: "AI আৰ্ট",  icon: "✨", col: "#A78BFA", x: 80,  y: 90 },
-    { label: "লোগো",     icon: "🎨", col: "#F59E0B", x: 195, y: 70 },
-    { label: "ফটোশ্বপ",   icon: "Ps", col: "#00E5FF", x: 310, y: 70 },
-    { label: "স্ক্ৰীণশ্বট", icon: "💻", col: "#10B981", x: 425, y: 90 },
-  ];
+/* ── SCENE 5: Wing Spoilers & Engine Reverse Thrust (37.02s – 44.58s) ── */
+const ArtLandingReverse: Art = ({ f, t, fps }) => {
+  const reversePlume = (t * 150) % 80;
 
   return (
     <>
-      <In f={f} fps={fps} at={0.0} dy={20}>
-        {cards.map((c, i) => (
-          <g key={i} transform={`translate(${c.x}, ${c.y + (i % 2 === 0 ? floatBob : -floatBob)})`} filter="url(#f-real-drop)">
-            <rect x="-48" y="-45" width="96" height="90" rx="14" fill="#0F0621" stroke={c.col} strokeWidth="2.5"/>
-            <text x="0" y="2" textAnchor="middle" fontSize={26} fontWeight={900} fill={c.col}>{c.icon}</text>
-            <text x="0" y="28" textAnchor="middle" fontSize={11} fontWeight={900} fill="#E2E8F0" fontFamily={DS.font}>{c.label}</text>
-          </g>
-        ))}
-      </In>
+      <In f={f} fps={fps} at={0.0} dy={22}>
+        <g transform="translate(260, 140)" filter="url(#f-real-drop)">
+          {/* Wing Structure */}
+          <path d="M -165 10 L 75 10 L 135 22 L -145 22 Z" fill="#CBD5E1" stroke="#475569" strokeWidth="3"/>
+          {/* Speed-Brake Flight Spoiler Popped Up at 45° */}
+          <polygon points="-45,10 45,10 25,-35 -65,-35" fill="#0284C7" stroke="#38BDF8" strokeWidth="2.5"/>
 
-      <In f={f} fps={fps} at={0.18} dy={16}>
-        <g transform="translate(260, 195)" filter="url(#f-real-drop)">
-          <rect x="-180" y="-30" width="360" height="60" rx="12" fill="#1E1035" stroke="#7C3AED" strokeWidth="2"/>
-          <path d="M -140 10 Q -60 -25 0 0 T 140 -10" fill="none" stroke="#00E5FF" strokeWidth="3" strokeDasharray="6 4"/>
-          {[-140, 0, 140].map((nx) => (
-            <circle key={nx} cx={nx} cy={nx === 0 ? 0 : nx < 0 ? 10 : -10} r="5" fill="#F59E0B" stroke="#FFFFFF" strokeWidth="2"/>
+          {/* Engine Nacelle with Reverse Thrust Blocker Doors Open */}
+          <g transform="translate(0, 48)">
+            <rect x="-90" y="-22" width="180" height="44" rx="8" fill="url(#g-engine-metal)" stroke="#64748B" strokeWidth="2.5"/>
+            {/* Cascade Vanes Deflecting Forward */}
+            <rect x="-28" y="-24" width="56" height="48" fill="#020617" stroke="#F97316" strokeWidth="2"/>
+            {/* Forward-Directed Reverse Jet Streamlines (Braking) */}
+            {[-1, 1].map((dir) => (
+              <path
+                key={dir}
+                d={`M 0 ${dir * 12} Q ${-35 - reversePlume} ${dir * 38} ${-90 - reversePlume} ${dir * 48}`}
+                fill="none"
+                stroke="#00E5FF"
+                strokeWidth="4"
+                filter="url(#f-thrust-glow)"
+              />
+            ))}
+          </g>
+        </g>
+      </In>
+    </>
+  );
+};
+
+/* ── SCENE 6: Speedometer Deceleration & Safe Stop (44.58s – 48.80s) ── */
+const ArtLandingSafeStop: Art = ({ f, t, fps }) => {
+  const speedNeedle = interpolate(c01((t - 44.58) / 3.0), [0, 1], [110, -110]);
+
+  return (
+    <>
+      <In f={f} fps={fps} at={0.0} dy={22}>
+        <g transform="translate(260, 140)" filter="url(#f-real-drop)">
+          {/* Cockpit Airspeed Indicator Gauge */}
+          <circle cx="0" cy="0" r="90" fill="#020617" stroke="#0284C7" strokeWidth="4"/>
+          <circle cx="0" cy="0" r="76" fill="#0F172A" stroke="#334155" strokeWidth="2.5"/>
+
+          {/* Gauge Ticks */}
+          {[-120, -80, -40, 0, 40, 80, 120].map((deg) => (
+            <line
+              key={deg}
+              x1="0"
+              y1="-70"
+              x2="0"
+              y2="-60"
+              stroke="#94A3B8"
+              strokeWidth="2.5"
+              transform={`rotate(${deg})`}
+            />
           ))}
-        </g>
-      </In>
-    </>
-  );
-};
 
-/* ── SCENE 6: Reflections & Medical X-Ray Scans (45.80s – 54.00s) ── */
-const ArtImageMirrorsScans: Art = ({ f, t, fps }) => {
-  const scanBeam = (t * 70) % 90;
+          {/* Dynamic Braking Needle */}
+          <g transform={`rotate(${speedNeedle})`}>
+            <line x1="0" y1="14" x2="0" y2="-66" stroke="#EF4444" strokeWidth="4" strokeLinecap="round"/>
+            <circle cx="0" cy="0" r="7" fill="#F8FAFC"/>
+          </g>
 
-  return (
-    <>
-      <In f={f} fps={fps} at={0.0} dy={20}>
-        <g transform="translate(145, 130)" filter="url(#f-real-drop)">
-          <rect x="-65" y="-65" width="130" height="130" rx="18" fill="#1E293B" stroke="#38BDF8" strokeWidth="2.5"/>
-          <line x1="-40" y1="50" x2="40" y2="-50" stroke="#FFFFFF" strokeWidth="3" opacity={0.5}/>
-          <text x="0" y="5" textAnchor="middle" fontSize={26}>🪞</text>
-        </g>
-      </In>
-
-      <In f={f} fps={fps} at={0.12} dy={20}>
-        <g transform="translate(375, 130)" filter="url(#f-real-drop)">
-          <rect x="-65" y="-65" width="130" height="130" rx="12" fill="#020617" stroke="#22D3EE" strokeWidth="2.5"/>
-          <path d="M 0 -40 L 0 35 M -25 -25 Q 0 -35 25 -25 M -30 -10 Q 0 -20 30 -10" stroke="#67E8F9" strokeWidth="3" fill="none"/>
-          <line x1="-55" y1={-55 + scanBeam} x2="55" y2={-55 + scanBeam} stroke="#00E5FF" strokeWidth="2" filter="url(#f-glow-violet)"/>
+          {/* Verified Safe Stop Indicator */}
+          <g transform="translate(0, 38)">
+            <rect x="-52" y="-14" width="104" height="28" rx="8" fill="#065F46" stroke="#10B981" strokeWidth="2"/>
+            <text x="0" y="6" textAnchor="middle" fontSize={14} fontWeight={900} fill="#ECFDF5" fontFamily={DS.mono}>
+              0 KNOTS
+            </text>
+          </g>
         </g>
       </In>
     </>
@@ -344,31 +400,31 @@ const ArtImageMirrorsScans: Art = ({ f, t, fps }) => {
 };
 
 /* ─── Scene Registry & Phase Mappings ───────────────────────── */
-type SceneId = "photoOptics" | "photoRealCapture" | "photoMandatory"
-             | "imgBroadConcept" | "imgDigitalGraphics" | "imgMirrorsScans";
+type SceneId = "takeoffThrust" | "takeoffLift" | "takeoffRotation"
+             | "landingTouchdown" | "landingReverse" | "landingSafeStop";
 
 interface Copy { chip: string; tone: Tone }
-type Tone = "blue" | "amber" | "red" | "violet" | "cyan" | "green";
+type Tone = "amber" | "blue" | "cyan" | "green";
 
 const SCENES: Record<SceneId, { Art: Art; copy: Copy }> = {
-  photoOptics:        { Art: ArtPhotoOptics,        copy: { chip: "PHOTO · বাস্তৱ পোহৰ আৰু লেন্স", tone: "blue"   } },
-  photoRealCapture:   { Art: ArtPhotoRealCapture,   copy: { chip: "কেমেৰাৰে বাস্তৱ দৃশ্য ধৰা",     tone: "amber"  } },
-  photoMandatory:     { Art: ArtPhotoMandatory,     copy: { chip: "কেমেৰা অবিহনে ফটো অসম্ভৱ",   tone: "red"    } },
-  imgBroadConcept:    { Art: ArtImageBroadConcept,  copy: { chip: "IMAGE · দৃশ্যমান যিকোনো ৰূপ", tone: "violet" } },
-  imgDigitalGraphics: { Art: ArtImageDigitalGraphics,copy: { chip: "ডিজিটেল আৰ্ট, AI আৰু গ্ৰাফিক্স",tone: "cyan"   } },
-  imgMirrorsScans:    { Art: ArtImageMirrorsScans,  copy: { chip: "প্ৰতিবিম্ব আৰু X-Ray ৰিপ’ৰ্ট", tone: "green"  } },
+  takeoffThrust:    { Art: ArtTakeoffThrust,    copy: { chip: "TAKEOFF · ইঞ্জিনৰ সৰ্বোচ্চ শক্তি", tone: "amber" } },
+  takeoffLift:      { Art: ArtTakeoffLift,      copy: { chip: "বতাহৰ চাপ আৰু লিফ্ট (LIFT)",      tone: "cyan"  } },
+  takeoffRotation:  { Art: ArtTakeoffRotation,  copy: { chip: "মাধ্যাকৰ্ষণ জয় কৰি আকাশলৈ উৰণ", tone: "amber" } },
+  landingTouchdown: { Art: ArtLandingTouchdown, copy: { chip: "LANDING · ৰাণৱেত টাচডাউন",       tone: "blue"  } },
+  landingReverse:   { Art: ArtLandingReverse,   copy: { chip: "ব্ৰেক আৰু REVERSE THRUST",         tone: "blue"  } },
+  landingSafeStop:  { Art: ArtLandingSafeStop,  copy: { chip: "গতি কমাই নিৰাপদ অৱতৰণ",        tone: "green" } },
 };
 
 const PHASES = {
   left: [
-    { id: "photoOptics"        as SceneId, from: 9.10  },
-    { id: "photoRealCapture"   as SceneId, from: 16.90 },
-    { id: "photoMandatory"     as SceneId, from: 26.00 },
+    { id: "takeoffThrust"    as SceneId, from: 9.50  },
+    { id: "takeoffLift"      as SceneId, from: 18.54 },
+    { id: "takeoffRotation"  as SceneId, from: 25.38 },
   ],
   right: [
-    { id: "imgBroadConcept"    as SceneId, from: 30.00 },
-    { id: "imgDigitalGraphics" as SceneId, from: 37.10 },
-    { id: "imgMirrorsScans"    as SceneId, from: 45.80 },
+    { id: "landingTouchdown" as SceneId, from: 30.38 },
+    { id: "landingReverse"   as SceneId, from: 37.02 },
+    { id: "landingSafeStop"  as SceneId, from: 44.58 },
   ],
 } as const;
 
@@ -377,19 +433,15 @@ const TextBlock: React.FC<{ copy: Copy; f: number; t: number; fps: number; idx: 
   copy, f, t, fps, idx, total,
 }) => {
   const c =
-    copy.tone === "blue"   ? DS.blue   :
-    copy.tone === "amber"  ? DS.amber  :
-    copy.tone === "red"    ? DS.red    :
-    copy.tone === "violet" ? DS.violet :
-    copy.tone === "cyan"   ? DS.cyan   : DS.green;
+    copy.tone === "amber" ? DS.amber :
+    copy.tone === "blue"  ? DS.blue  :
+    copy.tone === "cyan"  ? DS.cyan  : DS.green;
 
   const grad =
-    copy.tone === "violet" ? "linear-gradient(90deg,#7C3AED,#A78BFA)" :
-    copy.tone === "cyan"   ? "linear-gradient(90deg,#0284C7,#00E5FF)" :
-    copy.tone === "red"    ? "linear-gradient(90deg,#B91C1C,#EF4444)" :
-    copy.tone === "green"  ? "linear-gradient(90deg,#059669,#10B981)" :
-    copy.tone === "amber"  ? "linear-gradient(90deg,#D97706,#F59E0B)" :
-                             "linear-gradient(90deg,#1D4ED8,#3B82F6)";
+    copy.tone === "amber" ? "linear-gradient(90deg,#C2410C,#F97316)" :
+    copy.tone === "blue"  ? "linear-gradient(90deg,#0284C7,#00E5FF)" :
+    copy.tone === "cyan"  ? "linear-gradient(90deg,#0D9488,#14B8A6)" :
+                            "linear-gradient(90deg,#059669,#10B981)";
 
   const rise = (p: number): React.CSSProperties => ({
     opacity: c01(p * 1.7),
@@ -469,7 +521,7 @@ export const TopicMotionGraphics: React.FC<TopicMotionGraphicsProps> = ({ point,
     frame < startFrame || frame > endFrame ||
     point.id.startsWith("intro") || point.id.includes("cta") ||
     point.id.includes("ending") || point.id.includes("question") ||
-    point.id.includes("summary") || currentTime >= 54.00
+    point.id.includes("summary") || currentTime >= 48.80
   ) return null;
 
   const localFrame  = frame - startFrame;
@@ -502,8 +554,8 @@ export const TopicMotionGraphics: React.FC<TopicMotionGraphicsProps> = ({ point,
   if (isRight) leftPos = is9x16 ? 1080 - 36 - cardWidth : is16x9 ? 1920 - 50 - cardWidth : 1080 - 40 - cardWidth;
 
   let side: "left" | "right" | null = null;
-  if (point.id.includes("left")  || isLeft  || point.id.includes("photo")) side = "left";
-  if (point.id.includes("right") || isRight || point.id.includes("image")) side = "right";
+  if (point.id.includes("left")  || isLeft  || point.id.includes("takeoff")) side = "left";
+  if (point.id.includes("right") || isRight || point.id.includes("landing")) side = "right";
   if (!side) return null;
 
   const phases = PHASES[side];
