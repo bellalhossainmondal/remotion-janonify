@@ -10,18 +10,20 @@ interface TopicMotionGraphicsProps {
 }
 
 /**
- * TopicMotionGraphics — Printer vs Scanner (Assamese Hardware Transfer)
+ * TopicMotionGraphics — Electric Car vs Hybrid Car (Assamese)
  * ─────────────────────────────────────────────────────────────
  * 100% TRANSPARENT background.
- * Procedural SVG hardware art with prominent 33px Assamese text chips.
+ * Procedural SVG automotive engineering graphics with prominent 33px text chips.
  *
- * LEFT  — Printer (8.50s → 28.50s)
- *   1. printOutputDevice (9.26s):  Paper feeding through rollers, CMYK printhead droplets
- *   2. printSoftToHard   (22.82s): Screen soft copy converting to physical hard paper copy
+ * LEFT  — Electric Car (8.50s → 38.00s)
+ *   1. evBatteryMotor   (8.96s):  Underfloor skateboard Li-ion battery pack & e-motor powertrain
+ *   2. evPlugCharging   (15.78s): DC Fast Charging plug connecting with glowing electric current
+ *   3. evZeroEmission   (23.02s): Zero emission green leaf seal & silent smooth glide motion
  *
- * RIGHT — Scanner (28.50s → 55.20s)
- *   3. scanInputOptical  (29.02s): Flatbed glass with glowing optical CIS scanning carriage beam
- *   4. scanHardToSoft    (49.20s): Physical paper sheet converting to digital PDF on computer
+ * RIGHT — Hybrid Car (38.00s → 76.80s)
+ *   4. hybridDualPower  (38.66s): ICE Petrol Engine paired alongside electric motor & battery
+ *   5. hybridAutoShift  (50.72s): Dynamic power-flow split (Low speed = EV, High speed = Petrol)
+ *   6. hybridRegenBrake (65.88s): Self-charging regenerative braking kinetic energy recycling
  */
 
 /* ─── Tokens ─────────────────────────────────────────────── */
@@ -29,10 +31,10 @@ const DS = {
   font: `"Hind Siliguri","Noto Sans Bengali","Poppins","Segoe UI",system-ui,sans-serif`,
   mono: `"JetBrains Mono","Roboto Mono",ui-monospace,monospace`,
   ink:   "#0B1F4B",
-  blue:  { a: "#1D4ED8", b: "#3B82F6" },
+  cyan:  { a: "#0284C7", b: "#00E5FF" },
   green: { a: "#047857", b: "#10B981" },
   amber: { a: "#C2410C", b: "#F97316" },
-  cyan:  { a: "#0284C7", b: "#00E5FF" },
+  blue:  { a: "#1D4ED8", b: "#3B82F6" },
   spring: {
     pop:  { damping: 12, stiffness: 170, mass: 0.7 },
     soft: { damping: 20, stiffness: 100, mass: 1.0 },
@@ -74,33 +76,27 @@ const In: React.FC<{ f: number; fps: number; at: number; dy?: number; children: 
 /* ─── SVG Realistic Defs ──────────────────────────────────── */
 const Defs: React.FC = () => (
   <defs>
-    <linearGradient id="g-printer-body" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stopColor="#475569"/>
-      <stop offset="40%" stopColor="#334155"/>
+    <linearGradient id="g-battery" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stopColor="#00E5FF"/>
+      <stop offset="50%" stopColor="#38BDF8"/>
+      <stop offset="100%" stopColor="#0284C7"/>
+    </linearGradient>
+
+    <linearGradient id="g-engine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stopColor="#64748B"/>
+      <stop offset="50%" stopColor="#334155"/>
       <stop offset="100%" stopColor="#0F172A"/>
     </linearGradient>
 
-    <linearGradient id="g-scanner-glass" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stopColor="#38BDF8" stopOpacity="0.3"/>
-      <stop offset="50%" stopColor="#0284C7" stopOpacity="0.1"/>
-      <stop offset="100%" stopColor="#10B981" stopOpacity="0.25"/>
-    </linearGradient>
-
-    <linearGradient id="g-scan-light" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stopColor="#00E5FF" stopOpacity="0.95"/>
-      <stop offset="50%" stopColor="#10B981" stopOpacity="0.8"/>
-      <stop offset="100%" stopColor="#10B981" stopOpacity="0"/>
-    </linearGradient>
-
-    <linearGradient id="g-paper" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stopColor="#FFFFFF"/>
-      <stop offset="100%" stopColor="#F1F5F9"/>
+    <linearGradient id="g-eco" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stopColor="#10B981"/>
+      <stop offset="100%" stopColor="#06B6D4"/>
     </linearGradient>
 
     <filter id="f-real-drop" x="-30%" y="-30%" width="160%" height="170%">
       <feDropShadow dx="0" dy="7" stdDeviation="7" floodColor="#060C1E" floodOpacity="0.38"/>
     </filter>
-    <filter id="f-scan-glow" x="-40%" y="-40%" width="180%" height="180%">
+    <filter id="f-energy-glow" x="-40%" y="-40%" width="180%" height="180%">
       <feGaussianBlur stdDeviation="6" result="blur"/>
       <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
@@ -108,79 +104,106 @@ const Defs: React.FC = () => (
 );
 
 /* ══════════════════════════════════════════════════════════════
-   LEFT — PRINTER (আউটপুট: চফ্ট কপি → হাৰ্ড কপি)
+   LEFT — ELECTRIC CAR (ইলেকট্ৰিক গাড়ী)
    ══════════════════════════════════════════════════════════════ */
 
-/* ── SCENE 1: Precision Paper Feed & CMYK Printhead (8.50s – 22.82s) ── */
-const ArtPrintOutputDevice: Art = ({ f, t, fps }) => {
-  const paperFeedY = interpolate((t * 2) % 1, [0, 1], [-20, 25]);
-  const headX = Math.sin(t * 8) * 60;
+/* ── SCENE 1: EV Battery Pack & Electric Motor Powertrain (8.96s – 15.78s) ── */
+const ArtEvBatteryMotor: Art = ({ f, t, fps }) => {
+  const motorSpin = t * 600;
+  const pulse = 0.8 + Math.sin(t * 5) * 0.2;
 
   return (
     <>
       <In f={f} fps={fps} at={0.0} dy={22}>
         <g transform="translate(260, 140)" filter="url(#f-real-drop)">
-          <polygon points="-110,60 110,60 85,100 -85,100" fill="#1E293B" stroke="#475569" strokeWidth="2"/>
+          <rect x="-160" y="-45" width="320" height="90" rx="14" fill="#0F172A" stroke="#00E5FF" strokeWidth="2.5"/>
 
-          <g transform={`translate(0, ${paperFeedY})`}>
-            <rect x="-80" y="0" width="160" height="95" rx="3" fill="url(#g-paper)" stroke="#CBD5E1" strokeWidth="1.5"/>
-            {[-35, -15, 5, 25].map((ly) => (
-              <line key={ly} x1="-60" y1={ly + 30} x2="60" y2={ly + 30} stroke="#334155" strokeWidth="2.5" strokeDasharray="10 4"/>
-            ))}
+          <rect x="-110" y="-30" width="160" height="60" rx="6" fill="#1E293B" stroke="#38BDF8" strokeWidth="1.5"/>
+          {[-95, -70, -45, -20, 5, 30].map((cx) => (
+            <rect key={cx} x={cx} y="-22" width="18" height="44" rx="3" fill="url(#g-battery)" opacity={pulse}/>
+          ))}
+
+          <path d="M 50 0 L 95 0" stroke="#F97316" strokeWidth="6" strokeLinecap="round"/>
+
+          <g transform="translate(125, 0)">
+            <circle cx="0" cy="0" r="34" fill="url(#g-engine)" stroke="#00E5FF" strokeWidth="3"/>
+            <circle cx="0" cy="0" r="22" fill="#020617"/>
+            <g transform={`rotate(${motorSpin})`}>
+              {[0, 60, 120, 180, 240, 300].map((deg) => (
+                <line key={deg} x1="0" y1="0" x2={Math.cos(deg) * 20} y2={Math.sin(deg) * 20}
+                  stroke="#38BDF8" strokeWidth="3" strokeLinecap="round"/>
+              ))}
+            </g>
           </g>
 
-          <rect x="-140" y="-70" width="280" height="135" rx="14" fill="url(#g-printer-body)" stroke="#64748B" strokeWidth="3"/>
-          <rect x="-95" y="15" width="190" height="16" rx="4" fill="#020617"/>
-
-          <rect x="-115" y="-35" width="230" height="6" rx="2" fill="#64748B"/>
-          <g transform={`translate(${headX}, -40)`}>
-            <rect x="-24" y="-8" width="48" height="24" rx="4" fill="#0284C7" stroke="#38BDF8" strokeWidth="1.5"/>
-            <circle cx="-12" cy="18" r="2.5" fill="#00E5FF"/>
-            <circle cx="-4"  cy="18" r="2.5" fill="#EC4899"/>
-            <circle cx="4"   cy="18" r="2.5" fill="#FACC15"/>
-            <circle cx="12"  cy="18" r="2.5" fill="#0F172A"/>
-          </g>
-
-          <rect x="75" y="-55" width="42" height="18" rx="4" fill="#020617" stroke="#334155" strokeWidth="1"/>
-          <circle cx="105" cy="-46" r="3.5" fill="#10B981"/>
+          {[-140, 140].map((wx) => (
+            <g key={wx} transform={`translate(${wx}, 45)`}>
+              <circle cx="0" cy="0" r="18" fill="#1E293B" stroke="#64748B" strokeWidth="2"/>
+            </g>
+          ))}
         </g>
       </In>
     </>
   );
 };
 
-/* ── SCENE 2: Soft Copy to Hard Copy Transfer (22.82s – 28.50s) ── */
-const ArtPrintSoftToHard: Art = ({ f, t, fps }) => {
-  const pulse = 1 + Math.sin(t * 4) * 0.05;
+/* ── SCENE 2: Direct Plug-in Charging Station (15.78s – 23.02s) ── */
+const ArtEvPlugCharging: Art = ({ f, t, fps }) => {
+  const currentFlow = (t * 120) % 60;
+  const boltPulse = 1 + Math.sin(t * 6) * 0.1;
 
   return (
     <>
       <In f={f} fps={fps} at={0.0} dy={22}>
         <g transform="translate(260, 140)" filter="url(#f-real-drop)">
-          <g transform="translate(-105, 0)">
-            <rect x="-55" y="-60" width="110" height="120" rx="10" fill="#0F172A" stroke="#3B82F6" strokeWidth="3"/>
-            <rect x="-45" y="-50" width="90" height="95" rx="5" fill="#1E293B"/>
-            <text x="0" y="-15" textAnchor="middle" fontSize={12} fontWeight={900} fill="#38BDF8" fontFamily={DS.mono}>
-              DIGITAL
-            </text>
-            <text x="0" y="5" textAnchor="middle" fontSize={11} fontWeight={700} fill="#94A3B8" fontFamily={DS.font}>
-              চফ্ট কপি
+          <g transform="translate(-110, 0)">
+            <rect x="-45" y="-80" width="90" height="160" rx="12" fill="#0F172A" stroke="#00E5FF" strokeWidth="3"/>
+            <rect x="-32" y="-65" width="64" height="40" rx="5" fill="#020617"/>
+            <rect x="-24" y="-55" width="48" height="20" rx="4" fill="#065F46" stroke="#10B981" strokeWidth="1.5"/>
+            <text x="0" y="-41" textAnchor="middle" fontSize={11} fontWeight={900} fill="#6EE7B7" fontFamily={DS.mono}>
+              100 kW
             </text>
           </g>
 
-          <g transform={`translate(0, 0) scale(${pulse})`}>
-            <line x1="-35" y1="0" x2="30" y2="0" stroke="#3B82F6" strokeWidth="5" strokeLinecap="round"/>
-            <polygon points="30,-9 45,0 30,9" fill="#3B82F6"/>
-          </g>
+          <path d="M -65 15 Q 0 45 65 0" fill="none" stroke="#334155" strokeWidth="10" strokeLinecap="round"/>
+          <path d="M -65 15 Q 0 45 65 0" fill="none" stroke="#00E5FF" strokeWidth="3" strokeDasharray="10 8" strokeDashoffset={-currentFlow}/>
 
-          <g transform="translate(105, 0)">
-            <rect x="-50" y="-60" width="100" height="120" rx="6" fill="url(#g-paper)" stroke="#CBD5E1" strokeWidth="2"/>
-            {[-25, -10, 5, 20].map((ly) => (
-              <line key={ly} x1="-32" y1={ly} x2="32" y2={ly} stroke="#475569" strokeWidth="2.5" strokeLinecap="round"/>
-            ))}
-            <text x="0" y="44" textAnchor="middle" fontSize={12} fontWeight={900} fill="#0F172A" fontFamily={DS.font}>
-              হাৰ্ড কপি
-            </text>
+          <g transform="translate(85, -5)">
+            <rect x="-20" y="-22" width="45" height="44" rx="8" fill="url(#g-engine)" stroke="#38BDF8" strokeWidth="2"/>
+            <g transform={`scale(${boltPulse})`} filter="url(#f-energy-glow)">
+              <polygon points="-2,-12 4,-12 -1,0 6,0 -4,14 -1,2 -6,2" fill="#FDE047"/>
+            </g>
+          </g>
+        </g>
+      </In>
+    </>
+  );
+};
+
+/* ── SCENE 3: Zero Emission Silent Motion (23.02s – 38.00s) ── */
+const ArtEvZeroEmission: Art = ({ f, t, fps }) => {
+  const leafWave = Math.sin(t * 3.5) * 6;
+
+  return (
+    <>
+      <In f={f} fps={fps} at={0.0} dy={22}>
+        <g transform="translate(260, 140)" filter="url(#f-real-drop)">
+          <path
+            d="M -150 30 C -120 30 -110 -15 -60 -25 C 0 -35 60 -15 90 10 L 150 20 L 150 40 L -150 40 Z"
+            fill="none"
+            stroke="#00E5FF"
+            strokeWidth="3.5"
+          />
+
+          <g transform={`translate(0, -10) translateY(${leafWave})`}>
+            <circle cx="0" cy="0" r="48" fill="#064E3B" stroke="#10B981" strokeWidth="3.5" filter="url(#f-energy-glow)"/>
+            <path
+              d="M -18 12 C -24 -15 5 -25 20 -15 C 22 15 2 22 -18 12 Z"
+              fill="#34D399"
+              stroke="#065F46"
+              strokeWidth="2"
+            />
+            <path d="M -18 12 Q 2 -2 20 -15" fill="none" stroke="#065F46" strokeWidth="2"/>
           </g>
         </g>
       </In>
@@ -189,71 +212,110 @@ const ArtPrintSoftToHard: Art = ({ f, t, fps }) => {
 };
 
 /* ══════════════════════════════════════════════════════════════
-   RIGHT — SCANNER (ইনপুট: হাৰ্ড কপি → চফ্ট কপি)
+   RIGHT — HYBRID CAR (হাইব্ৰিড গাড়ী)
    ══════════════════════════════════════════════════════════════ */
 
-/* ── SCENE 3: Flatbed Optical Scanner Beam (28.50s – 49.20s) ── */
-const ArtScanInputOptical: Art = ({ f, t, fps }) => {
-  const scanBarY = interpolate((t * 0.9) % 1, [0, 1], [-55, 55]);
+/* ── SCENE 4: Dual Powertrain (Petrol Engine + Electric Motor) (38.66s – 50.72s) ── */
+const ArtHybridDualPower: Art = ({ f, t, fps }) => {
+  const pulse = 1 + Math.sin(t * 4) * 0.06;
 
   return (
     <>
       <In f={f} fps={fps} at={0.0} dy={22}>
         <g transform="translate(260, 140)" filter="url(#f-real-drop)">
-          <rect x="-150" y="-80" width="300" height="160" rx="14" fill="url(#g-printer-body)" stroke="#475569" strokeWidth="3"/>
-          <rect x="-125" y="-65" width="250" height="130" rx="6" fill="url(#g-scanner-glass)" stroke="#38BDF8" strokeWidth="1.5"/>
-
-          <g opacity={0.65}>
-            <rect x="-85" y="-55" width="170" height="110" rx="3" fill="#FFFFFF" stroke="#94A3B8" strokeWidth="1"/>
-            {[-35, -15, 5, 25].map((dy) => (
-              <line key={dy} x1="-65" y1={dy} x2="65" y2={dy} stroke="#64748B" strokeWidth="2" strokeDasharray="8 4"/>
-            ))}
+          <g transform="translate(-95, 0)">
+            <rect x="-55" y="-55" width="110" height="110" rx="10" fill="url(#g-engine)" stroke="#F97316" strokeWidth="3"/>
+            <rect x="-35" y="-45" width="70" height="25" rx="4" fill="#334155"/>
+            <text x="0" y="5" textAnchor="middle" fontSize={13} fontWeight={900} fill="#FED7AA" fontFamily={DS.mono}>
+              PETROL
+            </text>
+            <text x="0" y="24" textAnchor="middle" fontSize={11} fontWeight={700} fill="#94A3B8" fontFamily={DS.font}>
+              ইঞ্জিন
+            </text>
           </g>
 
-          <g transform={`translate(0, ${scanBarY})`}>
-            <line x1="-125" y1="0" x2="125" y2="0" stroke="#00E5FF" strokeWidth="4.5" filter="url(#f-scan-glow)"/>
-            <rect x="-125" y="0" width="250" height="20" fill="url(#g-scan-light)"/>
+          <g transform={`translate(0, 0) scale(${pulse})`}>
+            <circle cx="0" cy="0" r="18" fill="#0F172A" stroke="#10B981" strokeWidth="3"/>
+            <text x="0" y="6" textAnchor="middle" fontSize={16} fontWeight={900} fill="#10B981">
+              ⚡
+            </text>
           </g>
 
-          <circle cx="120" cy="-60" r="5" fill="#10B981" filter="url(#f-scan-glow)"/>
+          <g transform="translate(95, 0)">
+            <rect x="-55" y="-55" width="110" height="110" rx="10" fill="#0F172A" stroke="#10B981" strokeWidth="3"/>
+            <circle cx="0" cy="-10" r="26" fill="url(#g-eco)"/>
+            <text x="0" y="32" textAnchor="middle" fontSize={12} fontWeight={900} fill="#A7F3D0" fontFamily={DS.font}>
+              ইলেকট্ৰিক মটৰ
+            </text>
+          </g>
         </g>
       </In>
     </>
   );
 };
 
-/* ── SCENE 4: Hard Copy to Digital Soft Copy Transfer (49.20s – 55.20s) ── */
-const ArtScanHardToSoft: Art = ({ f, t, fps }) => {
-  const pulse = 1 + Math.sin(t * 4) * 0.05;
+/* ── SCENE 5: Automatic Power Switching (EV mode vs Petrol mode) (50.72s – 65.88s) ── */
+const ArtHybridAutoShift: Art = ({ f, t, fps }) => {
+  const isHighSpeed = Math.sin(t * 2) > 0;
 
   return (
     <>
       <In f={f} fps={fps} at={0.0} dy={22}>
         <g transform="translate(260, 140)" filter="url(#f-real-drop)">
-          <g transform="translate(-105, 0)">
-            <rect x="-50" y="-60" width="100" height="120" rx="6" fill="url(#g-paper)" stroke="#CBD5E1" strokeWidth="2"/>
-            {[-25, -10, 5, 20].map((ly) => (
-              <line key={ly} x1="-32" y1={ly} x2="32" y2={ly} stroke="#475569" strokeWidth="2.5" strokeLinecap="round"/>
+          <circle cx="0" cy="0" r="85" fill="#0F172A" stroke={isHighSpeed ? "#F97316" : "#10B981"} strokeWidth="4"/>
+          <circle cx="0" cy="0" r="70" fill="#020617"/>
+
+          <text
+            x="0"
+            y="-15"
+            textAnchor="middle"
+            fontSize={15}
+            fontWeight={900}
+            fill={isHighSpeed ? "#FB923C" : "#34D399"}
+            fontFamily={DS.mono}
+          >
+            {isHighSpeed ? "ENGINE POWER" : "EV MODE"}
+          </text>
+
+          <text x="0" y="15" textAnchor="middle" fontSize={13} fontWeight={700} fill="#E2E8F0" fontFamily={DS.font}>
+            {isHighSpeed ? "উচ্চ গতিত পেট্ৰল" : "কম গতিত বেটাৰী"}
+          </text>
+
+          <rect x="-50" y="32" width="100" height="22" rx="6" fill="#1E293B"/>
+          <text x="0" y="47" textAnchor="middle" fontSize={10} fontWeight={900} fill="#94A3B8" fontFamily={DS.mono}>
+            AUTO SHIFT
+          </text>
+        </g>
+      </In>
+    </>
+  );
+};
+
+/* ── SCENE 6: Regenerative Braking (Self-Charging) (65.88s – 76.80s) ── */
+const ArtHybridRegenBrake: Art = ({ f, t, fps }) => {
+  const energyFlow = (t * 160) % 90;
+
+  return (
+    <>
+      <In f={f} fps={fps} at={0.0} dy={22}>
+        <g transform="translate(260, 140)" filter="url(#f-real-drop)">
+          <g transform="translate(-100, 0)">
+            <circle cx="0" cy="0" r="48" fill="#334155" stroke="#94A3B8" strokeWidth="3"/>
+            {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
+              <circle key={deg} cx={Math.cos(deg) * 32} cy={Math.sin(deg) * 32} r="3" fill="#0F172A"/>
             ))}
-            <text x="0" y="44" textAnchor="middle" fontSize={12} fontWeight={900} fill="#0F172A" fontFamily={DS.font}>
-              নথিপত্ৰ
-            </text>
+            <path d="M 20 -40 Q 48 0 20 40 L 40 40 Q 65 0 40 -40 Z" fill="#EF4444" stroke="#B91C1C" strokeWidth="2"/>
           </g>
 
-          <g transform={`translate(0, 0) scale(${pulse})`}>
-            <line x1="-35" y1="0" x2="30" y2="0" stroke="#10B981" strokeWidth="5" strokeLinecap="round"/>
-            <polygon points="30,-9 45,0 30,9" fill="#10B981"/>
-          </g>
+          <path d="M -50 0 L 50 0" stroke="#334155" strokeWidth="8" strokeLinecap="round"/>
+          <path d="M -50 0 L 50 0" stroke="#10B981" strokeWidth="4" strokeDasharray="14 10" strokeDashoffset={energyFlow}/>
 
-          <g transform="translate(105, 0)">
-            <rect x="-55" y="-60" width="110" height="120" rx="10" fill="#0F172A" stroke="#10B981" strokeWidth="3"/>
-            <rect x="-45" y="-50" width="90" height="95" rx="5" fill="#064E3B"/>
-            <text x="0" y="-12" textAnchor="middle" fontSize={13} fontWeight={900} fill="#34D399" fontFamily={DS.mono}>
-              PDF / JPG
-            </text>
-            <text x="0" y="10" textAnchor="middle" fontSize={11} fontWeight={700} fill="#E2E8F0" fontFamily={DS.font}>
-              ডিজিটেল ফাইল
-            </text>
+          <g transform="translate(100, 0)">
+            <rect x="-42" y="-50" width="84" height="100" rx="8" fill="#0F172A" stroke="#10B981" strokeWidth="3"/>
+            <rect x="-15" y="-60" width="30" height="10" rx="2" fill="#10B981"/>
+            {[-25, -5, 15, 35].map((by) => (
+              <rect key={by} x="-30" y={by} width="60" height="14" rx="2" fill="#34D399"/>
+            ))}
           </g>
         </g>
       </In>
@@ -262,26 +324,31 @@ const ArtScanHardToSoft: Art = ({ f, t, fps }) => {
 };
 
 /* ─── Scene Registry & Phase Mappings ───────────────────────── */
-type SceneId = "printOutputDevice" | "printSoftToHard" | "scanInputOptical" | "scanHardToSoft";
+type SceneId = "evBatteryMotor" | "evPlugCharging" | "evZeroEmission"
+             | "hybridDualPower" | "hybridAutoShift" | "hybridRegenBrake";
 
 interface Copy { chip: string; tone: Tone }
-type Tone = "blue" | "green" | "amber" | "cyan";
+type Tone = "cyan" | "green" | "amber" | "blue";
 
 const SCENES: Record<SceneId, { Art: Art; copy: Copy }> = {
-  printOutputDevice: { Art: ArtPrintOutputDevice, copy: { chip: "PRINTER · OUTPUT DEVICE",         tone: "blue"  } },
-  printSoftToHard:   { Art: ArtPrintSoftToHard,   copy: { chip: "চফ্ট কপি → হাৰ্ড কপি",           tone: "cyan"  } },
-  scanInputOptical:  { Art: ArtScanInputOptical,  copy: { chip: "SCANNER · INPUT DEVICE",          tone: "green" } },
-  scanHardToSoft:    { Art: ArtScanHardToSoft,    copy: { chip: "হাৰ্ড কপি → ডিজিটেল চফ্ট কপি",   tone: "amber" } },
+  evBatteryMotor:   { Art: ArtEvBatteryMotor,   copy: { chip: "ELECTRIC · Battery আৰু Motor",       tone: "cyan"  } },
+  evPlugCharging:   { Art: ArtEvPlugCharging,   copy: { chip: "Charging Stationত চাৰ্জিং",           tone: "blue"  } },
+  evZeroEmission:   { Art: ArtEvZeroEmission,   copy: { chip: "ধোঁৱাবিহীন শূন্য প্ৰদূষণ",          tone: "green" } },
+  hybridDualPower:  { Art: ArtHybridDualPower,  copy: { chip: "HYBRID · তেল আৰু বিদ্যুৎ",            tone: "green" } },
+  hybridAutoShift:  { Art: ArtHybridAutoShift,  copy: { chip: "স্বয়ংক্ৰিয় Engine Shift",            tone: "amber" } },
+  hybridRegenBrake: { Art: ArtHybridRegenBrake, copy: { chip: "Braking শক্তিত নিজে চাৰ্জ",           tone: "cyan"  } },
 };
 
 const PHASES = {
   left: [
-    { id: "printOutputDevice" as SceneId, from: 8.50  },
-    { id: "printSoftToHard"   as SceneId, from: 22.82 },
+    { id: "evBatteryMotor"   as SceneId, from: 8.50  },
+    { id: "evPlugCharging"   as SceneId, from: 15.78 },
+    { id: "evZeroEmission"   as SceneId, from: 23.02 },
   ],
   right: [
-    { id: "scanInputOptical"  as SceneId, from: 29.02 },
-    { id: "scanHardToSoft"    as SceneId, from: 49.20 },
+    { id: "hybridDualPower"  as SceneId, from: 38.66 },
+    { id: "hybridAutoShift"  as SceneId, from: 50.72 },
+    { id: "hybridRegenBrake" as SceneId, from: 65.88 },
   ],
 } as const;
 
@@ -290,15 +357,15 @@ const TextBlock: React.FC<{ copy: Copy; f: number; t: number; fps: number; idx: 
   copy, f, t, fps, idx, total,
 }) => {
   const c =
-    copy.tone === "blue"  ? DS.blue  :
+    copy.tone === "cyan"  ? DS.cyan  :
     copy.tone === "green" ? DS.green :
-    copy.tone === "cyan"  ? DS.cyan  : DS.amber;
+    copy.tone === "amber" ? DS.amber : DS.blue;
 
   const grad =
-    copy.tone === "blue"  ? "linear-gradient(90deg,#1D4ED8,#3B82F6)" :
-    copy.tone === "green" ? "linear-gradient(90deg,#047857,#10B981)" :
     copy.tone === "cyan"  ? "linear-gradient(90deg,#0284C7,#00E5FF)" :
-                            "linear-gradient(90deg,#C2410C,#F97316)";
+    copy.tone === "green" ? "linear-gradient(90deg,#047857,#10B981)" :
+    copy.tone === "amber" ? "linear-gradient(90deg,#C2410C,#F97316)" :
+                            "linear-gradient(90deg,#1D4ED8,#3B82F6)";
 
   const rise = (p: number): React.CSSProperties => ({
     opacity: c01(p * 1.7),
@@ -378,7 +445,7 @@ export const TopicMotionGraphics: React.FC<TopicMotionGraphicsProps> = ({ point,
     frame < startFrame || frame > endFrame ||
     point.id.startsWith("intro") || point.id.includes("cta") ||
     point.id.includes("ending") || point.id.includes("question") ||
-    point.id.includes("summary") || currentTime >= 55.20
+    point.id.includes("summary") || currentTime >= 76.80
   ) return null;
 
   const localFrame  = frame - startFrame;
@@ -411,8 +478,8 @@ export const TopicMotionGraphics: React.FC<TopicMotionGraphicsProps> = ({ point,
   if (isRight) leftPos = is9x16 ? 1080 - 36 - cardWidth : is16x9 ? 1920 - 50 - cardWidth : 1080 - 40 - cardWidth;
 
   let side: "left" | "right" | null = null;
-  if (point.id.includes("left")  || isLeft  || point.id.includes("print")) side = "left";
-  if (point.id.includes("right") || isRight || point.id.includes("scan"))  side = "right";
+  if (point.id.includes("left")  || isLeft  || point.id.includes("electric")) side = "left";
+  if (point.id.includes("right") || isRight || point.id.includes("hybrid"))   side = "right";
   if (!side) return null;
 
   const phases = PHASES[side];
