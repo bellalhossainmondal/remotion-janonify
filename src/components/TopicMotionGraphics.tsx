@@ -10,20 +10,20 @@ interface TopicMotionGraphicsProps {
 }
 
 /**
- * TopicMotionGraphics — Electric Car vs Hybrid Car (Assamese)
+ * TopicMotionGraphics — Mechanical Keyboard vs Membrane Keyboard (Assamese)
  * ─────────────────────────────────────────────────────────────
  * 100% TRANSPARENT background.
- * Procedural SVG automotive engineering graphics with prominent 33px text chips.
+ * Procedural SVG hardware engineering graphics with prominent 33px text chips.
  *
- * LEFT  — Electric Car (8.50s → 38.00s)
- *   1. evBatteryMotor   (8.96s):  Underfloor skateboard Li-ion battery pack & e-motor powertrain
- *   2. evPlugCharging   (15.78s): DC Fast Charging plug connecting with glowing electric current
- *   3. evZeroEmission   (23.02s): Zero emission green leaf seal & silent smooth glide motion
+ * LEFT  — Mechanical Keyboard (9.00s → 41.28s)
+ *   1. mechSwitchSpring  (9.28s):  Cross-section of Mechanical Switch: Stem, Coil Spring & Gold Leaf Contact
+ *   2. mechClickTactile  (20.10s): Tactile bump actuation, tactile click shockwaves & instant trigger
+ *   3. mechHotSwapDurable(29.82s): Individual switch hot-swappable socket & 50M keystrokes durability
  *
- * RIGHT — Hybrid Car (38.00s → 76.80s)
- *   4. hybridDualPower  (38.66s): ICE Petrol Engine paired alongside electric motor & battery
- *   5. hybridAutoShift  (50.72s): Dynamic power-flow split (Low speed = EV, High speed = Petrol)
- *   6. hybridRegenBrake (65.88s): Self-charging regenerative braking kinetic energy recycling
+ * RIGHT — Membrane Keyboard (41.28s → 79.60s)
+ *   4. memRubberDome     (41.28s): Continuous silicone/rubber dome sheet layer beneath keycaps
+ *   5. memCircuitTrace   (55.26s): Key press flexing dome down to bridge 3-layer flexible conductive traces
+ *   6. memSilentBudget   (64.22s): Silent soft mushy typing feel & wear-and-tear degradation over time
  */
 
 /* ─── Tokens ─────────────────────────────────────────────── */
@@ -31,10 +31,11 @@ const DS = {
   font: `"Hind Siliguri","Noto Sans Bengali","Poppins","Segoe UI",system-ui,sans-serif`,
   mono: `"JetBrains Mono","Roboto Mono",ui-monospace,monospace`,
   ink:   "#0B1F4B",
-  cyan:  { a: "#0284C7", b: "#00E5FF" },
-  green: { a: "#047857", b: "#10B981" },
-  amber: { a: "#C2410C", b: "#F97316" },
   blue:  { a: "#1D4ED8", b: "#3B82F6" },
+  pink:  { a: "#BE185D", b: "#EC4899" },
+  cyan:  { a: "#0284C7", b: "#00E5FF" },
+  amber: { a: "#C2410C", b: "#F97316" },
+  green: { a: "#047857", b: "#10B981" },
   spring: {
     pop:  { damping: 12, stiffness: 170, mass: 0.7 },
     soft: { damping: 20, stiffness: 100, mass: 1.0 },
@@ -76,27 +77,39 @@ const In: React.FC<{ f: number; fps: number; at: number; dy?: number; children: 
 /* ─── SVG Realistic Defs ──────────────────────────────────── */
 const Defs: React.FC = () => (
   <defs>
-    <linearGradient id="g-battery" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stopColor="#00E5FF"/>
-      <stop offset="50%" stopColor="#38BDF8"/>
-      <stop offset="100%" stopColor="#0284C7"/>
-    </linearGradient>
-
-    <linearGradient id="g-engine" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stopColor="#64748B"/>
-      <stop offset="50%" stopColor="#334155"/>
+    <linearGradient id="g-keycap" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stopColor="#475569"/>
+      <stop offset="30%" stopColor="#334155"/>
       <stop offset="100%" stopColor="#0F172A"/>
     </linearGradient>
 
-    <linearGradient id="g-eco" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stopColor="#10B981"/>
-      <stop offset="100%" stopColor="#06B6D4"/>
+    <linearGradient id="g-switch-body" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stopColor="#1E293B"/>
+      <stop offset="100%" stopColor="#020617"/>
+    </linearGradient>
+
+    <linearGradient id="g-spring" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stopColor="#CBD5E1"/>
+      <stop offset="50%" stopColor="#94A3B8"/>
+      <stop offset="100%" stopColor="#475569"/>
+    </linearGradient>
+
+    <linearGradient id="g-silicone" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stopColor="#F472B6" stopOpacity="0.8"/>
+      <stop offset="70%" stopColor="#EC4899" stopOpacity="0.45"/>
+      <stop offset="100%" stopColor="#BE185D" stopOpacity="0.7"/>
+    </linearGradient>
+
+    <linearGradient id="g-pcb" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stopColor="#064E3B"/>
+      <stop offset="50%" stopColor="#047857"/>
+      <stop offset="100%" stopColor="#064E3B"/>
     </linearGradient>
 
     <filter id="f-real-drop" x="-30%" y="-30%" width="160%" height="170%">
       <feDropShadow dx="0" dy="7" stdDeviation="7" floodColor="#060C1E" floodOpacity="0.38"/>
     </filter>
-    <filter id="f-energy-glow" x="-40%" y="-40%" width="180%" height="180%">
+    <filter id="f-click-glow" x="-40%" y="-40%" width="180%" height="180%">
       <feGaussianBlur stdDeviation="6" result="blur"/>
       <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
@@ -104,106 +117,122 @@ const Defs: React.FC = () => (
 );
 
 /* ══════════════════════════════════════════════════════════════
-   LEFT — ELECTRIC CAR (ইলেকট্ৰিক গাড়ী)
+   LEFT — MECHANICAL KEYBOARD (মেকানিকেল কিব’ৰ্ড)
    ══════════════════════════════════════════════════════════════ */
 
-/* ── SCENE 1: EV Battery Pack & Electric Motor Powertrain (8.96s – 15.78s) ── */
-const ArtEvBatteryMotor: Art = ({ f, t, fps }) => {
-  const motorSpin = t * 600;
-  const pulse = 0.8 + Math.sin(t * 5) * 0.2;
+/* ── SCENE 1: Switch Cross-Section: Stem, Spring & Gold Leaf Contact (9.00s – 20.10s) ── */
+const ArtMechSwitchSpring: Art = ({ f, t, fps }) => {
+  const pressY = interpolate(Math.sin(t * 5), [-1, 1], [0, 16]);
+
+  return (
+    <>
+      <In f={f} fps={fps} at={0.0} dy={22}>
+        <g transform="translate(260, 135)" filter="url(#f-real-drop)">
+          <rect x="-85" y="-60" width="170" height="135" rx="10" fill="url(#g-switch-body)" stroke="#475569" strokeWidth="2.5"/>
+          <rect x="-95" y="10" width="10" height="25" rx="2" fill="#334155"/>
+          <rect x="85" y="10" width="10" height="25" rx="2" fill="#334155"/>
+
+          <path d="M 45 45 L 45 -10 Q 45 -25 35 -30" fill="none" stroke="#FACC15" strokeWidth="3" strokeLinecap="round"/>
+          <path d="M 55 45 L 55 -5 Q 55 -15 45 -20" fill="none" stroke="#FACC15" strokeWidth="2.5" strokeLinecap="round"/>
+
+          <g transform={`translate(0, ${pressY})`}>
+            <path d="M -55 -85 L 55 -85 L 65 -55 L -65 -55 Z" fill="url(#g-keycap)" stroke="#64748B" strokeWidth="2"/>
+            <text x="0" y="-65" textAnchor="middle" fontSize={13} fontWeight={900} fill="#E2E8F0" fontFamily={DS.mono}>
+              CTRL
+            </text>
+
+            <rect x="-24" y="-55" width="48" height="42" rx="4" fill="#2563EB" stroke="#60A5FA" strokeWidth="1.5"/>
+            <rect x="-4" y="-70" width="8" height="18" fill="#3B82F6"/>
+            <rect x="-10" y="-64" width="20" height="6" fill="#3B82F6"/>
+            <polygon points="20,-25 38,-15 20,-10" fill="#1D4ED8"/>
+          </g>
+
+          <g transform="translate(0, 10)">
+            {[-18, -6, 6, 18, 30].map((sy) => (
+              <ellipse key={sy} cx="0" cy={sy - pressY * 0.4} rx="18" ry="4" fill="none" stroke="url(#g-spring)" strokeWidth="3.5"/>
+            ))}
+          </g>
+
+          <rect x="-25" y="75" width="6" height="18" rx="2" fill="#FACC15"/>
+          <rect x="45" y="75" width="6" height="18" rx="2" fill="#FACC15"/>
+        </g>
+      </In>
+    </>
+  );
+};
+
+/* ── SCENE 2: Tactile Click Wave & Instant Actuation (20.10s – 29.82s) ── */
+const ArtMechClickTactile: Art = ({ f, t, fps }) => {
+  const clickWave = (t * 4) % 1;
+  const isActuated = clickWave > 0.4 && clickWave < 0.8;
 
   return (
     <>
       <In f={f} fps={fps} at={0.0} dy={22}>
         <g transform="translate(260, 140)" filter="url(#f-real-drop)">
-          <rect x="-160" y="-45" width="320" height="90" rx="14" fill="#0F172A" stroke="#00E5FF" strokeWidth="2.5"/>
+          <rect x="-70" y="-45" width="140" height="110" rx="12" fill="url(#g-switch-body)" stroke="#2563EB" strokeWidth="3"/>
 
-          <rect x="-110" y="-30" width="160" height="60" rx="6" fill="#1E293B" stroke="#38BDF8" strokeWidth="1.5"/>
-          {[-95, -70, -45, -20, 5, 30].map((cx) => (
-            <rect key={cx} x={cx} y="-22" width="18" height="44" rx="3" fill="url(#g-battery)" opacity={pulse}/>
-          ))}
+          <path d="M -50 -75 L 50 -75 L 60 -45 L -60 -45 Z" fill="url(#g-keycap)" stroke="#38BDF8" strokeWidth="2"/>
+          <text x="0" y="-55" textAnchor="middle" fontSize={14} fontWeight={900} fill="#38BDF8" fontFamily={DS.mono}>
+            W
+          </text>
 
-          <path d="M 50 0 L 95 0" stroke="#F97316" strokeWidth="6" strokeLinecap="round"/>
-
-          <g transform="translate(125, 0)">
-            <circle cx="0" cy="0" r="34" fill="url(#g-engine)" stroke="#00E5FF" strokeWidth="3"/>
-            <circle cx="0" cy="0" r="22" fill="#020617"/>
-            <g transform={`rotate(${motorSpin})`}>
-              {[0, 60, 120, 180, 240, 300].map((deg) => (
-                <line key={deg} x1="0" y1="0" x2={Math.cos(deg) * 20} y2={Math.sin(deg) * 20}
-                  stroke="#38BDF8" strokeWidth="3" strokeLinecap="round"/>
+          {isActuated && (
+            <g filter="url(#f-click-glow)">
+              {[1, 2, 3].map((r) => (
+                <circle
+                  key={r}
+                  cx="0"
+                  cy="-10"
+                  r={30 + r * 22}
+                  fill="none"
+                  stroke="#00E5FF"
+                  strokeWidth={3 - r * 0.6}
+                  strokeDasharray="6 4"
+                  opacity={0.8 - r * 0.2}
+                />
               ))}
             </g>
-          </g>
+          )}
 
-          {[-140, 140].map((wx) => (
-            <g key={wx} transform={`translate(${wx}, 45)`}>
-              <circle cx="0" cy="0" r="18" fill="#1E293B" stroke="#64748B" strokeWidth="2"/>
+          <rect x="-65" y="15" width="130" height="30" rx="8" fill="#1E3A8A" stroke="#38BDF8" strokeWidth="1.5"/>
+          <text x="0" y="35" textAnchor="middle" fontSize={13} fontWeight={900} fill="#E0F2FE" fontFamily={DS.mono}>
+            CLICKY TACTILE
+          </text>
+        </g>
+      </In>
+    </>
+  );
+};
+
+/* ── SCENE 3: Hot-Swappable Switch & Durability (29.82s – 41.28s) ── */
+const ArtMechHotSwapDurable: Art = ({ f, t, fps }) => {
+  const liftY = interpolate(Math.sin(t * 3), [-1, 1], [-30, 0]);
+
+  return (
+    <>
+      <In f={f} fps={fps} at={0.0} dy={22}>
+        <g transform="translate(260, 140)" filter="url(#f-real-drop)">
+          <rect x="-140" y="45" width="280" height="20" rx="4" fill="url(#g-pcb)" stroke="#10B981" strokeWidth="2"/>
+          {[-80, 0, 80].map((sx) => (
+            <g key={sx} transform={`translate(${sx}, 50)`}>
+              <circle cx="-12" cy="0" r="5" fill="#020617" stroke="#FACC15" strokeWidth="2"/>
+              <circle cx="12" cy="0" r="5" fill="#020617" stroke="#FACC15" strokeWidth="2"/>
             </g>
           ))}
-        </g>
-      </In>
-    </>
-  );
-};
 
-/* ── SCENE 2: Direct Plug-in Charging Station (15.78s – 23.02s) ── */
-const ArtEvPlugCharging: Art = ({ f, t, fps }) => {
-  const currentFlow = (t * 120) % 60;
-  const boltPulse = 1 + Math.sin(t * 6) * 0.1;
+          <g transform={`translate(0, ${liftY})`}>
+            <rect x="-35" y="-30" width="70" height="65" rx="8" fill="#1E293B" stroke="#60A5FA" strokeWidth="2"/>
+            <rect x="-15" y="-45" width="30" height="18" rx="3" fill="#2563EB"/>
+            <rect x="-14" y="35" width="4" height="15" fill="#FACC15"/>
+            <rect x="10" y="35" width="4" height="15" fill="#FACC15"/>
+          </g>
 
-  return (
-    <>
-      <In f={f} fps={fps} at={0.0} dy={22}>
-        <g transform="translate(260, 140)" filter="url(#f-real-drop)">
-          <g transform="translate(-110, 0)">
-            <rect x="-45" y="-80" width="90" height="160" rx="12" fill="#0F172A" stroke="#00E5FF" strokeWidth="3"/>
-            <rect x="-32" y="-65" width="64" height="40" rx="5" fill="#020617"/>
-            <rect x="-24" y="-55" width="48" height="20" rx="4" fill="#065F46" stroke="#10B981" strokeWidth="1.5"/>
-            <text x="0" y="-41" textAnchor="middle" fontSize={11} fontWeight={900} fill="#6EE7B7" fontFamily={DS.mono}>
-              100 kW
+          <g transform="translate(0, -55)">
+            <rect x="-70" y="-14" width="140" height="28" rx="14" fill="#065F46" stroke="#34D399" strokeWidth="2"/>
+            <text x="0" y="4" textAnchor="middle" fontSize={12} fontWeight={900} fill="#ECFDF5" fontFamily={DS.mono}>
+              50M+ KEYSTROKES
             </text>
-          </g>
-
-          <path d="M -65 15 Q 0 45 65 0" fill="none" stroke="#334155" strokeWidth="10" strokeLinecap="round"/>
-          <path d="M -65 15 Q 0 45 65 0" fill="none" stroke="#00E5FF" strokeWidth="3" strokeDasharray="10 8" strokeDashoffset={-currentFlow}/>
-
-          <g transform="translate(85, -5)">
-            <rect x="-20" y="-22" width="45" height="44" rx="8" fill="url(#g-engine)" stroke="#38BDF8" strokeWidth="2"/>
-            <g transform={`scale(${boltPulse})`} filter="url(#f-energy-glow)">
-              <polygon points="-2,-12 4,-12 -1,0 6,0 -4,14 -1,2 -6,2" fill="#FDE047"/>
-            </g>
-          </g>
-        </g>
-      </In>
-    </>
-  );
-};
-
-/* ── SCENE 3: Zero Emission Silent Motion (23.02s – 38.00s) ── */
-const ArtEvZeroEmission: Art = ({ f, t, fps }) => {
-  const leafWave = Math.sin(t * 3.5) * 6;
-
-  return (
-    <>
-      <In f={f} fps={fps} at={0.0} dy={22}>
-        <g transform="translate(260, 140)" filter="url(#f-real-drop)">
-          <path
-            d="M -150 30 C -120 30 -110 -15 -60 -25 C 0 -35 60 -15 90 10 L 150 20 L 150 40 L -150 40 Z"
-            fill="none"
-            stroke="#00E5FF"
-            strokeWidth="3.5"
-          />
-
-          <g transform={`translate(0, -10) translateY(${leafWave})`}>
-            <circle cx="0" cy="0" r="48" fill="#064E3B" stroke="#10B981" strokeWidth="3.5" filter="url(#f-energy-glow)"/>
-            <path
-              d="M -18 12 C -24 -15 5 -25 20 -15 C 22 15 2 22 -18 12 Z"
-              fill="#34D399"
-              stroke="#065F46"
-              strokeWidth="2"
-            />
-            <path d="M -18 12 Q 2 -2 20 -15" fill="none" stroke="#065F46" strokeWidth="2"/>
           </g>
         </g>
       </In>
@@ -212,110 +241,110 @@ const ArtEvZeroEmission: Art = ({ f, t, fps }) => {
 };
 
 /* ══════════════════════════════════════════════════════════════
-   RIGHT — HYBRID CAR (হাইব্ৰিড গাড়ী)
+   RIGHT — MEMBRANE KEYBOARD (মেমব্ৰেন কিব’ৰ্ড)
    ══════════════════════════════════════════════════════════════ */
 
-/* ── SCENE 4: Dual Powertrain (Petrol Engine + Electric Motor) (38.66s – 50.72s) ── */
-const ArtHybridDualPower: Art = ({ f, t, fps }) => {
-  const pulse = 1 + Math.sin(t * 4) * 0.06;
+/* ── SCENE 4: Silicone Rubber Dome Sheet Layer (41.28s – 55.26s) ── */
+const ArtMemRubberDome: Art = ({ f, t, fps }) => {
+  const pulse = 1 + Math.sin(t * 3.5) * 0.05;
 
   return (
     <>
       <In f={f} fps={fps} at={0.0} dy={22}>
         <g transform="translate(260, 140)" filter="url(#f-real-drop)">
-          <g transform="translate(-95, 0)">
-            <rect x="-55" y="-55" width="110" height="110" rx="10" fill="url(#g-engine)" stroke="#F97316" strokeWidth="3"/>
-            <rect x="-35" y="-45" width="70" height="25" rx="4" fill="#334155"/>
-            <text x="0" y="5" textAnchor="middle" fontSize={13} fontWeight={900} fill="#FED7AA" fontFamily={DS.mono}>
-              PETROL
-            </text>
-            <text x="0" y="24" textAnchor="middle" fontSize={11} fontWeight={700} fill="#94A3B8" fontFamily={DS.font}>
-              ইঞ্জিন
-            </text>
-          </g>
+          {[-90, 0, 90].map((kx) => (
+            <path key={kx} d={`M ${kx - 35} -55 L ${kx + 35} -55 L ${kx + 40} -30 L ${kx - 40} -30 Z`}
+              fill="url(#g-keycap)" stroke="#64748B" strokeWidth="1.5"/>
+          ))}
 
-          <g transform={`translate(0, 0) scale(${pulse})`}>
-            <circle cx="0" cy="0" r="18" fill="#0F172A" stroke="#10B981" strokeWidth="3"/>
-            <text x="0" y="6" textAnchor="middle" fontSize={16} fontWeight={900} fill="#10B981">
-              ⚡
-            </text>
-          </g>
+          <rect x="-150" y="0" width="300" height="14" rx="3" fill="url(#g-silicone)"/>
 
-          <g transform="translate(95, 0)">
-            <rect x="-55" y="-55" width="110" height="110" rx="10" fill="#0F172A" stroke="#10B981" strokeWidth="3"/>
-            <circle cx="0" cy="-10" r="26" fill="url(#g-eco)"/>
-            <text x="0" y="32" textAnchor="middle" fontSize={12} fontWeight={900} fill="#A7F3D0" fontFamily={DS.font}>
-              ইলেকট্ৰিক মটৰ
-            </text>
-          </g>
+          {[-90, 0, 90].map((dx) => (
+            <g key={dx} transform={`translate(${dx}, 0) scale(${pulse})`}>
+              <path
+                d="M -30 0 C -30 -35 30 -35 30 0 Z"
+                fill="url(#g-silicone)"
+                stroke="#F472B6"
+                strokeWidth="2.5"
+              />
+              <rect x="-8" y="-30" width="16" height="8" rx="2" fill="#18181B"/>
+            </g>
+          ))}
+
+          <line x1="-140" y1="25" x2="140" y2="25" stroke="#CBD5E1" strokeWidth="4"/>
         </g>
       </In>
     </>
   );
 };
 
-/* ── SCENE 5: Automatic Power Switching (EV mode vs Petrol mode) (50.72s – 65.88s) ── */
-const ArtHybridAutoShift: Art = ({ f, t, fps }) => {
-  const isHighSpeed = Math.sin(t * 2) > 0;
+/* ── SCENE 5: Membrane Dome Flex & 3-Layer Circuit Bridging (55.26s – 64.22s) ── */
+const ArtMemCircuitTrace: Art = ({ f, t, fps }) => {
+  const isCompressed = Math.sin(t * 5) > 0;
+  const domeScaleY = isCompressed ? 0.35 : 1.0;
+  const keyY = isCompressed ? 22 : 0;
 
   return (
     <>
       <In f={f} fps={fps} at={0.0} dy={22}>
         <g transform="translate(260, 140)" filter="url(#f-real-drop)">
-          <circle cx="0" cy="0" r="85" fill="#0F172A" stroke={isHighSpeed ? "#F97316" : "#10B981"} strokeWidth="4"/>
-          <circle cx="0" cy="0" r="70" fill="#020617"/>
+          <g transform={`translate(0, ${keyY})`}>
+            <path d="M -50 -70 L 50 -70 L 60 -40 L -60 -40 Z" fill="url(#g-keycap)" stroke="#94A3B8" strokeWidth="2"/>
+            <text x="0" y="-50" textAnchor="middle" fontSize={14} fontWeight={900} fill="#E2E8F0" fontFamily={DS.mono}>
+              ENTER
+            </text>
+          </g>
 
-          <text
-            x="0"
-            y="-15"
-            textAnchor="middle"
-            fontSize={15}
-            fontWeight={900}
-            fill={isHighSpeed ? "#FB923C" : "#34D399"}
-            fontFamily={DS.mono}
-          >
-            {isHighSpeed ? "ENGINE POWER" : "EV MODE"}
-          </text>
+          <g transform={`translate(0, 5) scale(1, ${domeScaleY})`}>
+            <path d="M -45 0 C -45 -50 45 -50 45 0 Z" fill="url(#g-silicone)" stroke="#EC4899" strokeWidth="3"/>
+            <rect x="-12" y="-42" width="24" height="12" rx="3" fill="#0F172A"/>
+          </g>
 
-          <text x="0" y="15" textAnchor="middle" fontSize={13} fontWeight={700} fill="#E2E8F0" fontFamily={DS.font}>
-            {isHighSpeed ? "উচ্চ গতিত পেট্ৰল" : "কম গতিত বেটাৰী"}
-          </text>
+          <rect x="-120" y="10" width="240" height="5" rx="2" fill="#93C5FD"/>
+          <rect x="-120" y="18" width="95" height="4" fill="#64748B"/>
+          <rect x="25" y="18" width="95" height="4" fill="#64748B"/>
+          <rect x="-120" y="25" width="240" height="5" rx="2" fill="#93C5FD"/>
 
-          <rect x="-50" y="32" width="100" height="22" rx="6" fill="#1E293B"/>
-          <text x="0" y="47" textAnchor="middle" fontSize={10} fontWeight={900} fill="#94A3B8" fontFamily={DS.mono}>
-            AUTO SHIFT
-          </text>
+          {isCompressed && (
+            <circle cx="0" cy="20" r="14" fill="#FACC15" opacity={0.8} filter="url(#f-click-glow)"/>
+          )}
         </g>
       </In>
     </>
   );
 };
 
-/* ── SCENE 6: Regenerative Braking (Self-Charging) (65.88s – 76.80s) ── */
-const ArtHybridRegenBrake: Art = ({ f, t, fps }) => {
-  const energyFlow = (t * 160) % 90;
+/* ── SCENE 6: Silent Cushion Feel & Degradation (64.22s – 79.60s) ── */
+const ArtMemSilentBudget: Art = ({ f, t, fps }) => {
+  const mushWave = Math.sin(t * 3) * 4;
 
   return (
     <>
       <In f={f} fps={fps} at={0.0} dy={22}>
         <g transform="translate(260, 140)" filter="url(#f-real-drop)">
-          <g transform="translate(-100, 0)">
-            <circle cx="0" cy="0" r="48" fill="#334155" stroke="#94A3B8" strokeWidth="3"/>
-            {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
-              <circle key={deg} cx={Math.cos(deg) * 32} cy={Math.sin(deg) * 32} r="3" fill="#0F172A"/>
-            ))}
-            <path d="M 20 -40 Q 48 0 20 40 L 40 40 Q 65 0 40 -40 Z" fill="#EF4444" stroke="#B91C1C" strokeWidth="2"/>
+          <g transform="translate(-85, 0)">
+            <circle cx="0" cy="0" r="48" fill="#1E293B" stroke="#EC4899" strokeWidth="3"/>
+            <text x="0" y="8" textAnchor="middle" fontSize={32}>
+              🤫
+            </text>
+            <text x="0" y="32" textAnchor="middle" fontSize={11} fontWeight={900} fill="#F472B6" fontFamily={DS.mono}>
+              SILENT
+            </text>
           </g>
 
-          <path d="M -50 0 L 50 0" stroke="#334155" strokeWidth="8" strokeLinecap="round"/>
-          <path d="M -50 0 L 50 0" stroke="#10B981" strokeWidth="4" strokeDasharray="14 10" strokeDashoffset={energyFlow}/>
+          <g transform={`translate(85, ${mushWave})`}>
+            <rect x="-55" y="-50" width="110" height="100" rx="14" fill="#831843" stroke="#F472B6" strokeWidth="2.5"/>
+            <path d="M -35 0 Q 0 -25 35 0" fill="none" stroke="#FBCFE8" strokeWidth="4" strokeLinecap="round"/>
+            <text x="0" y="24" textAnchor="middle" fontSize={12} fontWeight={800} fill="#FDF2F8" fontFamily={DS.font}>
+              কোমল ফিল
+            </text>
+          </g>
 
-          <g transform="translate(100, 0)">
-            <rect x="-42" y="-50" width="84" height="100" rx="8" fill="#0F172A" stroke="#10B981" strokeWidth="3"/>
-            <rect x="-15" y="-60" width="30" height="10" rx="2" fill="#10B981"/>
-            {[-25, -5, 15, 35].map((by) => (
-              <rect key={by} x="-30" y={by} width="60" height="14" rx="2" fill="#34D399"/>
-            ))}
+          <g transform="translate(0, 65)">
+            <rect x="-80" y="-14" width="160" height="28" rx="14" fill="#1E293B" stroke="#94A3B8" strokeWidth="1.5"/>
+            <text x="0" y="4" textAnchor="middle" fontSize={12} fontWeight={900} fill="#E2E8F0" fontFamily={DS.mono}>
+              LIGHT & BUDGET
+            </text>
           </g>
         </g>
       </In>
@@ -324,31 +353,31 @@ const ArtHybridRegenBrake: Art = ({ f, t, fps }) => {
 };
 
 /* ─── Scene Registry & Phase Mappings ───────────────────────── */
-type SceneId = "evBatteryMotor" | "evPlugCharging" | "evZeroEmission"
-             | "hybridDualPower" | "hybridAutoShift" | "hybridRegenBrake";
+type SceneId = "mechSwitchSpring" | "mechClickTactile" | "mechHotSwapDurable"
+             | "memRubberDome"    | "memCircuitTrace"  | "memSilentBudget";
 
 interface Copy { chip: string; tone: Tone }
-type Tone = "cyan" | "green" | "amber" | "blue";
+type Tone = "blue" | "pink" | "cyan" | "green" | "amber";
 
 const SCENES: Record<SceneId, { Art: Art; copy: Copy }> = {
-  evBatteryMotor:   { Art: ArtEvBatteryMotor,   copy: { chip: "ELECTRIC · Battery আৰু Motor",       tone: "cyan"  } },
-  evPlugCharging:   { Art: ArtEvPlugCharging,   copy: { chip: "Charging Stationত চাৰ্জিং",           tone: "blue"  } },
-  evZeroEmission:   { Art: ArtEvZeroEmission,   copy: { chip: "ধোঁৱাবিহীন শূন্য প্ৰদূষণ",          tone: "green" } },
-  hybridDualPower:  { Art: ArtHybridDualPower,  copy: { chip: "HYBRID · তেল আৰু বিদ্যুৎ",            tone: "green" } },
-  hybridAutoShift:  { Art: ArtHybridAutoShift,  copy: { chip: "স্বয়ংক্ৰিয় Engine Shift",            tone: "amber" } },
-  hybridRegenBrake: { Art: ArtHybridRegenBrake, copy: { chip: "Braking শক্তিত নিজে চাৰ্জ",           tone: "cyan"  } },
+  mechSwitchSpring:    { Art: ArtMechSwitchSpring,    copy: { chip: "স্বাধীন মেকানিকেল ছুইচ", tone: "blue"  } },
+  mechClickTactile:    { Art: ArtMechClickTactile,    copy: { chip: "ক্লিকি শব্দ আৰু TACTILE FEEL",            tone: "cyan"  } },
+  mechHotSwapDurable:  { Art: ArtMechHotSwapDurable,  copy: { chip: "অত্যন্ত টেকসই আৰু HOT-SWAP",             tone: "green" } },
+  memRubberDome:       { Art: ArtMemRubberDome,       copy: { chip: "MEMBRANE · চিলিকন ৰবৰ পেড",             tone: "pink"  } },
+  memCircuitTrace:     { Art: ArtMemCircuitTrace,     copy: { chip: "চাৰ্কিট ব'ৰ্ডত স্পৰ্শ আৰু টাইপ",         tone: "amber" } },
+  memSilentBudget:     { Art: ArtMemSilentBudget,     copy: { chip: "নিঃশব্দ, পাতল আৰু সুলভ",              tone: "pink"  } },
 };
 
 const PHASES = {
   left: [
-    { id: "evBatteryMotor"   as SceneId, from: 8.50  },
-    { id: "evPlugCharging"   as SceneId, from: 15.78 },
-    { id: "evZeroEmission"   as SceneId, from: 23.02 },
+    { id: "mechSwitchSpring"   as SceneId, from: 9.00  },
+    { id: "mechClickTactile"   as SceneId, from: 20.10 },
+    { id: "mechHotSwapDurable" as SceneId, from: 29.82 },
   ],
   right: [
-    { id: "hybridDualPower"  as SceneId, from: 38.66 },
-    { id: "hybridAutoShift"  as SceneId, from: 50.72 },
-    { id: "hybridRegenBrake" as SceneId, from: 65.88 },
+    { id: "memRubberDome"      as SceneId, from: 41.28 },
+    { id: "memCircuitTrace"    as SceneId, from: 55.26 },
+    { id: "memSilentBudget"    as SceneId, from: 64.22 },
   ],
 } as const;
 
@@ -357,15 +386,17 @@ const TextBlock: React.FC<{ copy: Copy; f: number; t: number; fps: number; idx: 
   copy, f, t, fps, idx, total,
 }) => {
   const c =
+    copy.tone === "blue"  ? DS.blue  :
+    copy.tone === "pink"  ? DS.pink  :
     copy.tone === "cyan"  ? DS.cyan  :
-    copy.tone === "green" ? DS.green :
-    copy.tone === "amber" ? DS.amber : DS.blue;
+    copy.tone === "green" ? DS.green : DS.amber;
 
   const grad =
+    copy.tone === "blue"  ? "linear-gradient(90deg,#1D4ED8,#3B82F6)" :
+    copy.tone === "pink"  ? "linear-gradient(90deg,#BE185D,#EC4899)" :
     copy.tone === "cyan"  ? "linear-gradient(90deg,#0284C7,#00E5FF)" :
     copy.tone === "green" ? "linear-gradient(90deg,#047857,#10B981)" :
-    copy.tone === "amber" ? "linear-gradient(90deg,#C2410C,#F97316)" :
-                            "linear-gradient(90deg,#1D4ED8,#3B82F6)";
+                            "linear-gradient(90deg,#C2410C,#F97316)";
 
   const rise = (p: number): React.CSSProperties => ({
     opacity: c01(p * 1.7),
@@ -445,7 +476,7 @@ export const TopicMotionGraphics: React.FC<TopicMotionGraphicsProps> = ({ point,
     frame < startFrame || frame > endFrame ||
     point.id.startsWith("intro") || point.id.includes("cta") ||
     point.id.includes("ending") || point.id.includes("question") ||
-    point.id.includes("summary") || currentTime >= 76.80
+    point.id.includes("summary") || currentTime >= 79.60
   ) return null;
 
   const localFrame  = frame - startFrame;
@@ -478,8 +509,8 @@ export const TopicMotionGraphics: React.FC<TopicMotionGraphicsProps> = ({ point,
   if (isRight) leftPos = is9x16 ? 1080 - 36 - cardWidth : is16x9 ? 1920 - 50 - cardWidth : 1080 - 40 - cardWidth;
 
   let side: "left" | "right" | null = null;
-  if (point.id.includes("left")  || isLeft  || point.id.includes("electric")) side = "left";
-  if (point.id.includes("right") || isRight || point.id.includes("hybrid"))   side = "right";
+  if (point.id.includes("left")  || isLeft  || point.id.includes("mechanical")) side = "left";
+  if (point.id.includes("right") || isRight || point.id.includes("membrane"))   side = "right";
   if (!side) return null;
 
   const phases = PHASES[side];
